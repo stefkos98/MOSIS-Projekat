@@ -13,7 +13,7 @@
       android:layout_width="230dp"
       android:layout_height="230dp"
       android:layout_gravity="center"
-      app:srcCompat="@drawable/mosis_logo_tekst" />
+      android:background="@drawable/mosis_logo_tekst"/>
 
     <LinearLayout
         android:layout_width="400dp"
@@ -101,11 +101,11 @@
         android:gravity=""
         android:text="Take a Photo" />
     <ImageView
-        android:layout_marginLeft="40dp"
+        android:layout_marginLeft="50dp"
         android:layout_gravity="right"
-        android:layout_width="100dp"
+        android:layout_width="60dp"
         android:layout_height="60dp"
-        app:srcCompat="@drawable/camera" />
+        android:background="@drawable/camera" />
 </LinearLayout>
       <Button
           android:id="@+id/btnRegisterR"

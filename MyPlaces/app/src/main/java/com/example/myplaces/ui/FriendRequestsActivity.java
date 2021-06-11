@@ -3,6 +3,8 @@ package com.example.myplaces.ui;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 
+import com.example.myplaces.R;
+
 public class FriendRequestsActivity extends AppCompatActivity {
 
     @Override

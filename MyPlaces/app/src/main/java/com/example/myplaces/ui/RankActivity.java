@@ -70,7 +70,7 @@ public class RankActivity extends AppCompatActivity {
             }
         });
 
-        ListView myPlacesList=(ListView)findViewById(R.id.my_places_list);
+        ListView myPlacesList=(ListView)findViewById(R.id.RankList);
         myPlacesList.setAdapter(new ArrayAdapter<MyPlace>(this,android.R.layout.simple_list_item_1, MyPlacesData.getInstance().getMyPlaces()));
         myPlacesList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -154,7 +154,7 @@ public class RankActivity extends AppCompatActivity {
     }
 
     private void setList() {
-        ListView myPlacesList = (ListView) findViewById(R.id.my_places_list);
+        ListView myPlacesList = (ListView) findViewById(R.id.RankList);
         myPlacesList.setAdapter(new ArrayAdapter<MyPlace>(this, android.R.layout.simple_list_item_1,MyPlacesData.getInstance().getMyPlaces()));
     }
 

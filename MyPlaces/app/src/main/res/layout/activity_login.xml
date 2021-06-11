@@ -13,7 +13,7 @@
       android:layout_width="250dp"
       android:layout_gravity="center"
       android:layout_height="250dp"
-      app:srcCompat="@drawable/mosis_logo_tekst" />
+      android:background="@drawable/mosis_logo_tekst" />
 
   <EditText
           android:id="@+id/txtUsernameL"

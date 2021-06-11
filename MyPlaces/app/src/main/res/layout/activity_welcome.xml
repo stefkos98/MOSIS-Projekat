@@ -15,7 +15,7 @@
       android:layout_width="300dp"
       android:layout_margin="85dp"
       android:layout_height="300dp"
-      app:srcCompat="@drawable/mosis_logo_tekst_vertical" />
+      android:background="@drawable/mosis_logo_tekst_vertical" />
 
   <Button
         android:id="@+id/btnLogin"

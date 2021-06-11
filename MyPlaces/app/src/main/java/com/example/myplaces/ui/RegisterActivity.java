@@ -3,6 +3,7 @@ package com.example.myplaces.ui;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -22,27 +23,26 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
+import com.google.firebase.storage.FirebaseStorage;
 
-public class RegisterActivity extends AppCompatActivity
+public class RegisterActivity extends Activity
 {
     EditText txtEmail,txtPassword, txtPassword2;
     Button btnRegister;
     ProgressDialog mDialog;
     FirebaseAuth mAuth;
-
+    FirebaseStorage storage;
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
-
         txtEmail = findViewById(R.id.txtEmailR);
         txtPassword = findViewById(R.id.txtPasswordR);
         txtPassword2 = findViewById(R.id.txtConfirmPasswordR);
         btnRegister = findViewById(R.id.btnRegisterR);
         mAuth = FirebaseAuth.getInstance();
-
+        storage = FirebaseStorage.getInstance();
         btnRegister.setOnClickListener(new View.OnClickListener()
         {
             @RequiresApi(api = Build.VERSION_CODES.GINGERBREAD)

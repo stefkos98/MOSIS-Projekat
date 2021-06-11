@@ -3,6 +3,7 @@ package com.example.myplaces.ui;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.os.Build;
 import android.os.Bundle;
 import com.example.myplaces.R;
@@ -19,7 +20,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 
-public class LoginActivity extends AppCompatActivity
+public class LoginActivity extends Activity
 {
     EditText txtEmail, txtPassword;
     Button btnLogin;
@@ -29,8 +30,6 @@ public class LoginActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 

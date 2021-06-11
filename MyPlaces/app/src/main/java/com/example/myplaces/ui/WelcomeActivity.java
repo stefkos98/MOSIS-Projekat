@@ -2,6 +2,7 @@ package com.example.myplaces.ui;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.os.Bundle;
 
 import com.example.myplaces.R;
@@ -11,7 +12,7 @@ import android.widget.Button;
 
 import com.google.firebase.auth.FirebaseAuth;
 
-public class WelcomeActivity extends AppCompatActivity
+public class WelcomeActivity extends Activity
 {
     Button btnLogin, btnRegister;
     FirebaseAuth mAuth;
@@ -20,7 +21,6 @@ public class WelcomeActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
         setContentView(R.layout.activity_welcome);
 
         btnLogin = findViewById(R.id.btnLogin);

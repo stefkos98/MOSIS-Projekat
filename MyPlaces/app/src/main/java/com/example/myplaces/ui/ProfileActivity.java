@@ -39,27 +39,13 @@ public class ProfileActivity extends AppCompatActivity {
             position=positionBundle.getInt("position");
             if(position>=0){
                 MyPlace place= MyPlacesData.getInstance().getPlace(position);
-                TextView twName=(TextView)findViewById(R.id.viewmyplace_name_text);
-                twName.setText(place.name);
-                TextView twDesc=(TextView)findViewById(R.id.viewmyplace_desc_text);
-                twDesc.setText(place.description);
-                TextView twLon=(TextView)findViewById(R.id.viewmyplace_lon_text);
-                twLon.setText(place.longitude);
-                TextView twLat=(TextView)findViewById(R.id.viewmyplace_lat_text);
-                twLat.setText(place.latitude);
+              //  TextView twName=(TextView)findViewById(R.id.viewmyplace_name_text);
+               // twName.setText(place.name);
             }
         }catch(Exception e){
             Toast.makeText(this,e.getMessage(),Toast.LENGTH_SHORT).show();
             finish();
         }
-
-        final Button finishedButton=(Button)findViewById(R.id.viewmyplace_finished_button);
-        finishedButton.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View view){
-                finish();
-            }
-        });
 
         /**snip **/
         IntentFilter intentFilter = new IntentFilter();
