@@ -1,0 +1,11 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.example.myplaces.ui.HomeActivity">
+    <item
+        android:id="@+id/fifth_setting"
+        android:orderInCategory="5"
+        android:title="@string/fifth_element"
+        android:icon="@drawable/outline_logout_white_24dp"
+        app:showAsAction="always" />
+</menu>

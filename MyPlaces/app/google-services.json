@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "956961889469",
+    "project_id": "mosislab-71d15",
+    "storage_bucket": "mosislab-71d15.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:956961889469:android:e59392c7e1a0245de42bd4",
+        "android_client_info": {
+          "package_name": "com.example.myplaces"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "956961889469-4640t9gr3p35j55n8vurbl5ad5bv81nj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAa3F4WT43eKRtpuetS8Tm3bx70QL9nz8E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "956961889469-4640t9gr3p35j55n8vurbl5ad5bv81nj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context=".ui.HomeActivity"
+    tools:showIn="@layout/activity_home">
+
+    <LinearLayout
+        android:background="@color/background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:layout_editor_absoluteX="16dp"
+        tools:layout_editor_absoluteY="-157dp">
+
+        <ImageView
+            android:id="@+id/app_logo_image_view"
+            android:layout_width="250dp"
+            android:layout_height="250dp"
+            android:layout_gravity="center"
+            app:srcCompat="@drawable/mosis_logo_tekst" />
+
+        <Button
+            android:id="@+id/btnShowMapH"
+            android:layout_width="400dp"
+            android:layout_height="70dp"
+            android:layout_gravity="center"
+            android:background="@color/lightgreen"
+            android:text="@string/showMap"
+            android:textColor="@color/white"
+            android:textSize="20dp">
+        </Button>
+        <Button
+            android:id="@+id/btnShowFriendsAndOtherUsersH"
+            android:layout_width="400dp"
+            android:layout_height="70dp"
+            android:layout_gravity="center"
+            android:background="@color/darkgreen"
+            android:text="@string/showFriendsAndOtherUsers"
+            android:textColor="@color/white"
+            android:textSize="20dp">
+    </Button>
+        <Button
+            android:id="@+id/btnFindFriendsH"
+            android:layout_width="400dp"
+            android:layout_height="70dp"
+            android:layout_gravity="center"
+            android:background="@color/lightgreen"
+            android:text="@string/findFriends"
+            android:textColor="@color/white"
+            android:textSize="20dp">
+        </Button>
+        <Button
+            android:id="@+id/btnFriendRequestsH"
+            android:layout_width="400dp"
+            android:layout_height="70dp"
+            android:layout_gravity="center"
+            android:background="@color/darkgreen"
+            android:text="@string/friendRequests"
+            android:textColor="@color/white"
+            android:textSize="20dp">
+        </Button>
+
+        <Button
+            android:id="@+id/btnRankH"
+            android:layout_width="400dp"
+            android:layout_height="61dp"
+            android:layout_gravity="center"
+            android:background="@color/lightgreen"
+            android:text="@string/rank"
+            android:textColor="@color/white"
+            android:textSize="20dp"></Button>
+        <Button
+            android:id="@+id/btnProfileH"
+            android:layout_width="400dp"
+            android:layout_height="60dp"
+            android:layout_gravity="center"
+            android:background="@color/darkgreen"
+            android:text="@string/profile"
+            android:textColor="@color/white"
+            android:textSize="20dp">
+        </Button>
+</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

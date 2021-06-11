@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/background"
+    tools:context=".ui.RegisterActivity">
+
+  <ImageView
+      android:id="@+id/imageView3"
+      android:layout_width="230dp"
+      android:layout_height="230dp"
+      android:layout_gravity="center"
+      app:srcCompat="@drawable/mosis_logo_tekst" />
+
+    <LinearLayout
+        android:layout_width="400dp"
+        android:layout_height="60dp"
+        android:layout_gravity="center"
+        android:orientation="horizontal">
+    <EditText
+        android:id="@+id/txtFirstNameR"
+        android:layout_width="175dp"
+        android:layout_height="60dp"
+        android:hint="First Name"
+        android:layout_gravity="center"
+        android:layout_margin="10dp"
+        android:singleLine="true">
+    </EditText>
+
+    <EditText
+        android:id="@+id/txtLastNameR"
+        android:layout_width="175dp"
+        android:layout_height="60dp"
+        android:layout_margin="10dp"
+        android:hint="Last Name"
+        android:layout_gravity="center"
+        android:singleLine="true">
+    </EditText>
+    </LinearLayout>
+
+    <EditText
+        android:id="@+id/txtUsernameR"
+        android:layout_width="400dp"
+        android:layout_height="60dp"
+        android:hint="Username"
+        android:layout_gravity="center"
+        android:singleLine="true">
+    </EditText>
+
+  <EditText
+            android:id="@+id/txtEmailR"
+            android:layout_width="400dp"
+            android:layout_height="60dp"
+            android:hint="Email Address"
+            android:layout_gravity="center"
+            android:singleLine="true">
+        </EditText>
+
+    <EditText
+        android:id="@+id/txtPhoneR"
+        android:layout_width="400dp"
+        android:layout_height="60dp"
+        android:hint="Phone Number"
+        android:layout_gravity="center"
+        android:singleLine="true">
+    </EditText>
+
+        <EditText
+            android:id="@+id/txtPasswordR"
+            android:layout_width="400dp"
+            android:layout_height="60dp"
+            android:hint="Password"
+            android:inputType="textPassword"
+            android:layout_gravity="center"
+            android:singleLine="true">
+        </EditText>
+
+        <EditText
+            android:id="@+id/txtConfirmPasswordR"
+            android:layout_width="400dp"
+            android:layout_height="60dp"
+            android:hint="Confirm Password"
+            android:inputType="textPassword"
+            android:layout_gravity="center"
+            android:singleLine="true">
+        </EditText>
+<LinearLayout
+    android:layout_width="400dp"
+    android:orientation="horizontal"
+    android:layout_gravity="center"
+    android:layout_height="70dp">
+    <TextView
+        android:id="@+id/txtTakeAPhotoR"
+        android:layout_width="250dp"
+        android:layout_height="60dp"
+        android:layout_gravity="left"
+        android:layout_marginLeft="6dp"
+        android:gravity=""
+        android:text="Take a Photo" />
+    <ImageView
+        android:layout_marginLeft="40dp"
+        android:layout_gravity="right"
+        android:layout_width="100dp"
+        android:layout_height="60dp"
+        app:srcCompat="@drawable/camera" />
+</LinearLayout>
+      <Button
+          android:id="@+id/btnRegisterR"
+          android:layout_width="400dp"
+          android:layout_height="50dp"
+          android:layout_margin="10dp"
+          android:layout_centerInParent="true"
+          android:textColor="@color/white"
+          android:background="@color/darkgreen"
+          android:textSize="20dp"
+          android:layout_gravity="center"
+          android:text="@string/register_label"/>
+
+</LinearLayout>

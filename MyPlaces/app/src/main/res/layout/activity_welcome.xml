@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:elevation="0dp"
+    android:orientation="vertical"
+    android:background="@color/background"
+    tools:context=".ui.WelcomeActivity">
+
+  <ImageView
+      android:id="@+id/imageView"
+      android:layout_gravity="center"
+      android:layout_width="300dp"
+      android:layout_margin="85dp"
+      android:layout_height="300dp"
+      app:srcCompat="@drawable/mosis_logo_tekst_vertical" />
+
+  <Button
+        android:id="@+id/btnLogin"
+        android:layout_width="300dp"
+        android:layout_height="70dp"
+      android:layout_gravity="center"
+        android:layout_below="@+id/imageView"
+        android:layout_centerHorizontal="true"
+      android:background="@color/lightgreen"
+      android:layout_marginBottom="30dp"
+        android:text="@string/login_label"
+        android:textColor="@color/textColor"
+        android:textSize="20dp" />
+
+
+    <Button
+        android:id="@+id/btnRegister"
+        android:layout_width="300dp"
+        android:layout_height="70dp"
+        android:layout_gravity="center"
+        android:layout_below="@+id/btnLogin"
+        android:layout_centerHorizontal="true"
+        android:background="@color/darkgreen"
+        android:text="@string/register_label"
+        android:textColor="@color/textColor"
+        android:textSize="20dp">
+
+    </Button>
+
+</LinearLayout>

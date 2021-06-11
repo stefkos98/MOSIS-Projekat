@@ -1,0 +1,46 @@
+<resources>
+    <string name="app_name">My Places</string>
+    <string name="action_settings">Settings</string>
+    <string name="first_element">Show map!</string>
+    <string name="second_element">New place!</string>
+    <string name="third_element">My places!</string>
+    <string name="fourth_element">About</string>
+    <string name="fifth_element">Logout</string>
+    <string name="about_content">About Text</string>
+    <string name="ok">Ok</string>
+    <string name="about_text"><i>My places</i> is the application that will help you remember charachteristics and locations of your favorite places. It will be able to show your places
+    on map and enable you to share them with your friends. Each week this application will be better and better and you will earn <i>points</i> from your teaching assistant.</string>
+    <string name="title_activity_my_places_list">MyPlacesList</string>
+    <string name="title_activity_edit_my_place">EditMyPlaceActivity</string>
+    <string name="editmyplace_name_label">Name:</string>
+    <string name="editmyplace_desc_label">Description:</string>
+    <string name="editmyplace_finish_label">Finish</string>
+    <string name="editmyplace_cancel_label">Cancel</string>
+    <string name="editmyplace_lat_label">Latitude</string>
+    <string name="editmyplace_lon_label">Longitude</string>
+    <string name="editmyplace_location_label">Get Location</string>
+    <string name="title_activity_view_my_place">ViewMyPlaceActivity</string>
+    <string name="viewmyplace_finish_label">OK</string>
+    <string name="viewmyplace_lon_label">Longitude</string>
+    <string name="viewmyplace_lat_label">Latitude</string>
+    <string name="title_activity_my_places_maps">Map</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+
+    <string name="hello_first_fragment">Hello first fragment</string>
+    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+    <string name="login_label">Login</string>
+    <string name="register_label">Register</string>
+    <string name="showMap">Show Map</string>
+    <string name="showFriendsAndOtherUsers">Show Friends And other Users</string>
+    <string name="findFriends">Find Friends</string>
+    <string name="friendRequests">Friend Requests</string>
+    <string name="rank">Rank</string>
+    <string name="profile">profile</string>
+    <string name="title_activity_friend_requests">FriendRequestsActivity</string>
+    <string name="saveChanges">Save Changes</string>
+    <string name="deleteProfile">Delete Profile</string>
+</resources>
