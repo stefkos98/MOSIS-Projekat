@@ -10,7 +10,7 @@
     tools:context=".ui.WelcomeActivity">
 
   <ImageView
-      android:id="@+id/imageView"
+      android:id="@+id/imageViewW"
       android:layout_gravity="center"
       android:layout_width="300dp"
       android:layout_margin="85dp"
@@ -18,26 +18,22 @@
       android:background="@drawable/mosis_logo_tekst_vertical" />
 
   <Button
-        android:id="@+id/btnLogin"
+        android:id="@+id/btnLoginW"
         android:layout_width="300dp"
         android:layout_height="70dp"
-      android:layout_gravity="center"
-        android:layout_below="@+id/imageView"
-        android:layout_centerHorizontal="true"
-      android:background="@color/lightgreen"
-      android:layout_marginBottom="30dp"
+        android:layout_gravity="center"
+        android:background="@color/lightgreen"
+        android:layout_marginBottom="30dp"
         android:text="@string/login_label"
         android:textColor="@color/textColor"
         android:textSize="20dp" />
 
 
     <Button
-        android:id="@+id/btnRegister"
+        android:id="@+id/btnRegisterW"
         android:layout_width="300dp"
         android:layout_height="70dp"
         android:layout_gravity="center"
-        android:layout_below="@+id/btnLogin"
-        android:layout_centerHorizontal="true"
         android:background="@color/darkgreen"
         android:text="@string/register_label"
         android:textColor="@color/textColor"

@@ -24,7 +24,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-public class EditMyPlaceActivity extends AppCompatActivity implements View.OnClickListener{
+public class AddCaseActivity extends AppCompatActivity implements View.OnClickListener{
     boolean editMode=true;
     int position=-1;
     FirebaseAuth mAuth;
@@ -33,7 +33,7 @@ public class EditMyPlaceActivity extends AppCompatActivity implements View.OnCli
     protected void onCreate(Bundle savedInstanceState) {
         mAuth=FirebaseAuth.getInstance();
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_edit_my_place);
+        setContentView(R.layout.activity_add_case);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -134,8 +134,8 @@ public class EditMyPlaceActivity extends AppCompatActivity implements View.OnCli
                 break;
             }
             case R.id.editmyplace_location_button:{
-                Intent i=new Intent(this, MyPlacesMapsActivity.class);
-                i.putExtra("state",MyPlacesMapsActivity.SELECT_COORDINATES);
+                Intent i=new Intent(this, MapActivity.class);
+                i.putExtra("state", MapActivity.SELECT_COORDINATES);
                 startActivityForResult(i,1);
                 break;
             }
@@ -146,7 +146,7 @@ public class EditMyPlaceActivity extends AppCompatActivity implements View.OnCli
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_edit_my_place, menu);
+        getMenuInflater().inflate(R.menu.menu_add_case, menu);
         return true;
     }
 
@@ -159,8 +159,8 @@ public class EditMyPlaceActivity extends AppCompatActivity implements View.OnCli
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.first_setting) {
-            Intent i=new Intent(this,MyPlacesMapsActivity.class);
-            i.putExtra("state",MyPlacesMapsActivity.SHOW_MAP);
+            Intent i=new Intent(this, MapActivity.class);
+            i.putExtra("state", MapActivity.SHOW_MAP);
             startActivity(i);
         }
         if (id == R.id.third_setting) {
@@ -168,7 +168,7 @@ public class EditMyPlaceActivity extends AppCompatActivity implements View.OnCli
             startActivity(i);
         }
         if (id == R.id.fourth_setting) {
-            Intent i=new Intent(this,About.class);
+            Intent i=new Intent(this, FriendActivity.class);
             startActivity(i);
         }
         if (id == R.id.home) {
@@ -182,7 +182,7 @@ public class EditMyPlaceActivity extends AppCompatActivity implements View.OnCli
             sendBroadcast(broadcastIntent);
             //
             mAuth.signOut();
-            Intent logoutIntent = new Intent(EditMyPlaceActivity.this, WelcomeActivity.class);
+            Intent logoutIntent = new Intent(AddCaseActivity.this, WelcomeActivity.class);
             logoutIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             startActivity(logoutIntent);
             finish();

@@ -9,7 +9,7 @@
       tools:context="com.example.myplaces.ui.LoginActivity">
 
   <ImageView
-      android:id="@+id/imageView2"
+      android:id="@+id/imageViewL"
       android:layout_width="250dp"
       android:layout_gravity="center"
       android:layout_height="250dp"
@@ -21,7 +21,7 @@
           android:layout_height="60dp"
           android:hint="Username"
           android:layout_gravity="center"
-        android:layout_margin="15dp"
+          android:layout_margin="15dp"
           android:singleLine="true">
 
       </EditText>
@@ -42,7 +42,6 @@
         android:layout_width="400dp"
         android:layout_height="60dp"
         android:layout_margin="35dp"
-        android:layout_centerInParent="true"
         android:layout_gravity="center"
         android:textColor="@color/textColor"
         android:background="@color/lightgreen"

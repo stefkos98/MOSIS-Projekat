@@ -58,11 +58,11 @@ public class HomeActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.first_setting) {
-            Intent i=new Intent(this,MyPlacesMapsActivity.class);
+            Intent i=new Intent(this, MapActivity.class);
             startActivity(i);
         }
         if (id == R.id.second_setting) {
-            Intent i=new Intent(this,EditMyPlaceActivity.class);
+            Intent i=new Intent(this, AddCaseActivity.class);
             startActivityForResult(i,NEW_PLACE);
         }
         if (id == R.id.third_setting) {
@@ -70,7 +70,7 @@ public class HomeActivity extends AppCompatActivity {
             startActivity(i);
         }
         if (id == R.id.fourth_setting) {
-            Intent i=new Intent(this,About.class);
+            Intent i=new Intent(this, FriendActivity.class);
             startActivity(i);
         }
         if(id == R.id.fifth_setting)

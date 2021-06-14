@@ -11,7 +11,7 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 
-import com.example.myplaces.databinding.ActivityMyPlacesMapsBinding;
+import com.example.myplaces.databinding.ActivityMapBinding;
 import com.example.myplaces.models.MyPlace;
 import com.example.myplaces.models.MyPlacesData;
 
@@ -48,7 +48,7 @@ import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
 import java.util.ArrayList;
 
-public class MyPlacesMapsActivity extends AppCompatActivity {
+public class MapActivity extends AppCompatActivity {
 
     FirebaseAuth mAuth;
     MapView map=null;
@@ -56,7 +56,7 @@ public class MyPlacesMapsActivity extends AppCompatActivity {
     static int NEW_PLACE=1;
     static final int PERMISSION_ACCESS_FINE_LOCATION=1;
     private AppBarConfiguration appBarConfiguration;
-    private ActivityMyPlacesMapsBinding binding;
+    private ActivityMapBinding binding;
     MyLocationNewOverlay myLocationOverlay;
     ItemizedIconOverlay myPlacesOverlay=null;
 
@@ -102,7 +102,7 @@ public class MyPlacesMapsActivity extends AppCompatActivity {
             Log.d("Error","Error reading state");
         }
 
-     binding = ActivityMyPlacesMapsBinding.inflate(getLayoutInflater());
+     binding = ActivityMapBinding.inflate(getLayoutInflater());
      setContentView(binding.getRoot());
 
         setSupportActionBar(binding.toolbar);
@@ -115,8 +115,8 @@ public class MyPlacesMapsActivity extends AppCompatActivity {
             binding.fab.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent i = new Intent(MyPlacesMapsActivity.this, EditMyPlaceActivity.class);
-                    startActivityForResult(i, MyPlacesMapsActivity.NEW_PLACE);
+                    Intent i = new Intent(MapActivity.this, AddCaseActivity.class);
+                    startActivityForResult(i, MapActivity.NEW_PLACE);
                 }
             });
 
@@ -253,11 +253,11 @@ public class MyPlacesMapsActivity extends AppCompatActivity {
         }
         else {
             if (id == R.id.second_setting) {
-                Intent i = new Intent(this, EditMyPlaceActivity.class);
+                Intent i = new Intent(this, AddCaseActivity.class);
                 startActivityForResult(i, 1);
             }
             if (id == R.id.fourth_setting) {
-                Intent i = new Intent(this, About.class);
+                Intent i = new Intent(this, FriendActivity.class);
                 startActivity(i);
             }
             if(id == R.id.fifth_setting)
@@ -266,7 +266,7 @@ public class MyPlacesMapsActivity extends AppCompatActivity {
                 broadcastIntent.setAction("com.package.ACTION_LOGOUT");
                 sendBroadcast(broadcastIntent);
                 mAuth.signOut();
-                Intent logoutIntent = new Intent(MyPlacesMapsActivity.this, WelcomeActivity.class);
+                Intent logoutIntent = new Intent(MapActivity.this, WelcomeActivity.class);
                 logoutIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 startActivity(logoutIntent);
                 finish();
@@ -348,7 +348,7 @@ public class MyPlacesMapsActivity extends AppCompatActivity {
         myPlacesOverlay = new ItemizedIconOverlay<>(overlayArrayList, new ItemizedIconOverlay.OnItemGestureListener<OverlayItem>() {
             @Override
             public boolean onItemSingleTapUp(int index, OverlayItem item) {
-                Intent intent = new Intent(MyPlacesMapsActivity.this, ProfileActivity.class);
+                Intent intent = new Intent(MapActivity.this, ProfileActivity.class);
                 intent.putExtra("position",index);
                 startActivity(intent);
                 return true;
@@ -356,7 +356,7 @@ public class MyPlacesMapsActivity extends AppCompatActivity {
 
             @Override
             public boolean onItemLongPress(int index, OverlayItem item) {
-                Intent intent = new Intent(MyPlacesMapsActivity.this,EditMyPlaceActivity.class);
+                Intent intent = new Intent(MapActivity.this, AddCaseActivity.class);
                 intent.putExtra("position",index);
                 startActivityForResult(intent,5);
                 return true;

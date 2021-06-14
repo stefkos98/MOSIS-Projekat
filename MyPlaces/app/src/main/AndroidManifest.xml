@@ -22,11 +22,11 @@ package="com.example.myplaces">
         android:label="@string/title_activity_view_my_place"
         android:theme="@style/AppTheme.NoActionBar" />
     <activity
-        android:name="com.example.myplaces.ui.MyPlacesMapsActivity"
+        android:name="com.example.myplaces.ui.MapActivity"
         android:label="@string/title_activity_my_places_maps"
         android:theme="@style/AppTheme.NoActionBar" />
     <activity
-        android:name=".ui.EditMyPlaceActivity"
+        android:name=".ui.AddCaseActivity"
         android:label="@string/title_activity_edit_my_place"
         android:theme="@style/AppTheme.NoActionBar" />
     <activity
@@ -45,7 +45,7 @@ package="com.example.myplaces">
 
     </activity>
     <activity
-        android:name=".ui.About"
+        android:name=".ui.FriendActivity"
         android:label="About"
         android:theme="@style/Theme.AppCompat.Light.Dialog" />
     <activity android:name="com.example.myplaces.ui.LoginActivity"></activity>
