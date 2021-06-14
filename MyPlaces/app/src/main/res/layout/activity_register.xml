@@ -9,7 +9,7 @@
     tools:context=".ui.RegisterActivity">
 
   <ImageView
-      android:id="@+id/imageView3"
+      android:id="@+id/imageViewR"
       android:layout_width="230dp"
       android:layout_height="230dp"
       android:layout_gravity="center"
@@ -96,10 +96,10 @@
         android:id="@+id/txtTakeAPhotoR"
         android:layout_width="250dp"
         android:layout_height="60dp"
-        android:layout_gravity="left"
-        android:layout_marginLeft="6dp"
+        android:layout_gravity="start"
+        android:layout_marginStart="6dp"
         android:gravity=""
-        android:text="Take a Photo" />
+        android:text="@string/takeAPhoto" />
     <ImageView
         android:id="@+id/imageCreatePhoto"
         android:layout_marginLeft="70dp"
@@ -113,7 +113,6 @@
           android:layout_width="400dp"
           android:layout_height="50dp"
           android:layout_margin="10dp"
-          android:layout_centerInParent="true"
           android:textColor="@color/white"
           android:background="@color/darkgreen"
           android:textSize="20dp"

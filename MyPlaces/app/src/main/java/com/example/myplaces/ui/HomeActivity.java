@@ -52,7 +52,7 @@ public class HomeActivity extends AppCompatActivity {
         findViewById(R.id.btnShowMapH).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(HomeActivity.this, MyPlacesMapsActivity.class);
+                Intent intent = new Intent(HomeActivity.this, MapActivity.class);
                 startActivity(intent);
             }
         });

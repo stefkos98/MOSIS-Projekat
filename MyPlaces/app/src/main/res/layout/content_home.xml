@@ -18,7 +18,7 @@
         tools:layout_editor_absoluteY="-157dp">
 
         <ImageView
-            android:id="@+id/app_logo_image_view"
+            android:id="@+id/imageViewH"
             android:layout_width="250dp"
             android:layout_height="250dp"
             android:layout_gravity="center"
@@ -73,7 +73,7 @@
             android:background="@color/lightgreen"
             android:text="@string/rank"
             android:textColor="@color/white"
-            android:textSize="20dp"></Button>
+            android:textSize="20dp" />
         <Button
             android:id="@+id/btnProfileH"
             android:layout_width="400dp"

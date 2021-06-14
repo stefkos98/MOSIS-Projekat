@@ -29,7 +29,6 @@
             android:layout_marginLeft="30dp"
             app:srcCompat="@drawable/mosis_logo_tekst" />
     </LinearLayout>
-
     <LinearLayout
         android:layout_width="400dp"
         android:layout_height="60dp"
@@ -107,8 +106,8 @@
             android:id="@+id/txtTakeAPhotoP"
             android:layout_width="250dp"
             android:layout_height="60dp"
-            android:layout_gravity="left"
-            android:layout_marginLeft="6dp"
+            android:layout_gravity="start"
+            android:layout_marginStart="6dp"
             android:gravity=""
             android:text="Change a Photo" />
 
@@ -127,7 +126,6 @@
         android:layout_height="60dp"
         android:layout_gravity="center"
         android:text="Background Service" />
-
     <LinearLayout
         android:layout_width="400dp"
         android:layout_height="60dp"

@@ -43,4 +43,7 @@
     <string name="title_activity_friend_requests">FriendRequestsActivity</string>
     <string name="saveChanges">Save Changes</string>
     <string name="deleteProfile">Delete Profile</string>
+    <string name="takeAPhoto">Take a Photo</string>
+    <string name="addAPhoto">Add a Photo</string>
+    <string name="add_label">Add   +</string>
 </resources>

@@ -48,7 +48,7 @@ public class RankActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i=new Intent(RankActivity.this,EditMyPlaceActivity.class);
+                Intent i=new Intent(RankActivity.this, AddCaseActivity.class);
                 startActivityForResult(i,NEW_PLACE1);
             }
         });
@@ -134,7 +134,7 @@ public class RankActivity extends AppCompatActivity {
             startActivity(i);
         }
         else if(item.getItemId()==2){
-            i=new Intent(this,EditMyPlaceActivity.class);
+            i=new Intent(this, AddCaseActivity.class);
             i.putExtras(positionBundle);
             startActivityForResult(i,1);
         }
@@ -143,8 +143,8 @@ public class RankActivity extends AppCompatActivity {
             setList();
         }
         else if(item.getItemId()==4){
-            i=new Intent(this,MyPlacesMapsActivity.class);
-            i.putExtra("state",MyPlacesMapsActivity.CENTER_PLACE_ON_MAP);
+            i=new Intent(this, MapActivity.class);
+            i.putExtra("state", MapActivity.CENTER_PLACE_ON_MAP);
             MyPlace place=MyPlacesData.getInstance().getPlace(info.position);
             i.putExtra("lat",place.latitude);
             i.putExtra("lon",place.longitude);

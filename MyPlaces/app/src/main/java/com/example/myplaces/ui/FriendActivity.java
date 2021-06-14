@@ -7,11 +7,11 @@ import android.widget.Button;
 
 import com.example.myplaces.R;
 
-public class About extends Activity {
+public class FriendActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.about);
+        setContentView(R.layout.activity_friend);
         Button b=(Button)findViewById(R.id.about_ok);
         b.setOnClickListener(new View.OnClickListener(){
             @Override
