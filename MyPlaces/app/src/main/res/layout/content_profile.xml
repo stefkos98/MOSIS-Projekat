@@ -83,7 +83,7 @@
         android:layout_width="400dp"
         android:layout_height="60dp"
         android:layout_gravity="center"
-        android:hint="Password"
+        android:hint="Current password"
         android:inputType="textPassword"
         android:singleLine="true"></EditText>
 
@@ -92,7 +92,7 @@
         android:layout_width="400dp"
         android:layout_height="60dp"
         android:layout_gravity="center"
-        android:hint="Confirm Password"
+        android:hint="New Password"
         android:inputType="textPassword"
         android:singleLine="true"></EditText>
 

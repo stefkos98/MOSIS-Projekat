@@ -79,7 +79,6 @@ public class MapActivity extends AppCompatActivity {
         MyPlacesData.getInstance().setEventListener(new MyPlacesData.ListUpdatedEventListener() {
             @Override
             public void onListUpdated() {
-               // showMyPlaces(); // ? ? ?
                 setupMap();
             }
         });
@@ -268,7 +267,7 @@ public class MapActivity extends AppCompatActivity {
         final ArrayList<OverlayItem> overlayArrayList = new ArrayList<>();
         for(int i = 0; i<MyPlacesData.getInstance().getMyPlaces().size();i++){
             MyPlace mp = MyPlacesData.getInstance().getPlace(i);
-            OverlayItem overlayItem = new OverlayItem(mp.name,mp.description,new GeoPoint(Double.parseDouble(mp.latitude),Double.parseDouble(mp.longitude)));
+            OverlayItem overlayItem = new OverlayItem(mp.animalType,mp.description,new GeoPoint(Double.parseDouble(mp.latitude),Double.parseDouble(mp.longitude)));
             overlayItem.setMarker(this.getResources().getDrawable(R.drawable.baseline_myplace));
             overlayArrayList.add(overlayItem);
         }

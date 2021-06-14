@@ -23,6 +23,9 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -30,6 +33,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -49,12 +53,17 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.ByteArrayOutputStream;
+import java.util.HashMap;
+import java.util.Map;
+
 public class ProfileActivity extends AppCompatActivity {
     EditText txtFirstName, txtLastName, txtUsername, txtPhone, txtEmail, txtPassword, txtPassword2;
     private static final int TAKE_PICTURE = 100;
+    int NEW_PHOTO_TAKEN = 0;
     FirebaseAuth mAuth;
     private Bitmap imageBitmap;
-    StorageReference storageRef;
+    StorageReference storageRef, pictureRef;
     DatabaseReference database;
 
     @Override
@@ -136,25 +145,77 @@ public class ProfileActivity extends AppCompatActivity {
                                                                   @RequiresApi(api = Build.VERSION_CODES.GINGERBREAD)
                                                                   @Override
                                                                   public void onClick(View v) {
-                                                                      if(txtPassword.getText()!=null && txtPassword.getText()==txtPassword2.getText()) {
-                                                                          user.updatePassword(txtPassword.getText().toString()).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                      if (NEW_PHOTO_TAKEN == 1) {
+                                                                          ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                                                                          imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                                                                          byte[] data = baos.toByteArray();
+                                                                          pictureRef = storageRef.child("images/" + txtEmail.getText().toString() + ".jpg");
+                                                                          UploadTask uploadTask = pictureRef.putBytes(data);
+                                                                          uploadTask.addOnFailureListener(new OnFailureListener() {
                                                                               @Override
-                                                                              public void onComplete(@NonNull Task<Void> task) {
-                                                                                  if (task.isSuccessful()) {
-                                                                                      Log.d("TAG", "Password updated");
-                                                                                      //database
-
-                                                                                  } else {
-                                                                                      Log.d("TAG", "Error password not updated");
-                                                                                  }
+                                                                              public void onFailure(@NonNull Exception exception) {
+                                                                                  Toast.makeText(getApplicationContext(), "There was an error uploading a photo.", Toast.LENGTH_SHORT).show();
+                                                                                  return;
                                                                               }
-                                                                          });
-                                                                          finish();
-                                                                      }
-                                                                      else{
-                                                                          Toast.makeText(getApplicationContext(), "Passwords not equal!", Toast.LENGTH_SHORT).show();
+                                                                          }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                                                                              @Override
+                                                                              public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                                                                  Task<Uri> outputFileUri = pictureRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                                                                      @Override
+                                                                                      public void onSuccess(Uri uri) {
+                                                                                          String imageUrl = uri.toString();
+                                                                                          database.child("users").child(mAuth.getUid().toString()).child("picture").setValue(imageUrl);
+                                                                                      }
+                                                                                  });
 
+                                                                              }
+
+                                                                          });
                                                                       }
+                                                                      String pass1 = txtPassword.getText().toString();
+                                                                      String pass2 = txtPassword2.getText().toString();
+                                                                      Log.d("TAG1", pass1);
+                                                                      Log.d("TAg2", pass2);
+                                                                      if (txtPassword.getText().toString() != "" && txtPassword2.getText().toString() != "") {
+                                                                          FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                                                                          AuthCredential credential = EmailAuthProvider
+                                                                                  .getCredential(user.getEmail(), txtPassword.getText().toString());
+                                                                          user.reauthenticate(credential)
+                                                                                  .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                                      @Override
+                                                                                      public void onComplete(@NonNull Task<Void> task) {
+                                                                                          if(task.isSuccessful()) {
+                                                                                              Log.d("TAG", "User re-authenticated.");
+                                                                                              user.updatePassword(txtPassword2.getText().toString()).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                                                  @Override
+                                                                                                  public void onComplete(@NonNull Task<Void> task) {
+                                                                                                      if (task.isSuccessful()) {
+                                                                                                          Log.d("TAG", "Password updated");
+                                                                                                          //database
+
+                                                                                                      } else {
+                                                                                                          Log.d("TAG", "Error password not updated");
+                                                                                                      }
+                                                                                                  }
+                                                                                              });
+                                                                                          }else{
+                                                                                              Toast.makeText(getApplicationContext(), "Wrong password! Password not changed", Toast.LENGTH_SHORT).show();
+                                                                                                return;
+                                                                                          }
+                                                                                      }
+                                                                                  });
+                                                                      }
+                                                                      DatabaseReference hopperRef = database.child("users").child(uid);
+                                                                      Map<String, Object> hopperUpdates = new HashMap<>();
+                                                                      hopperUpdates.put("firstName", txtFirstName.getText().toString());
+                                                                      hopperUpdates.put("lastName", txtLastName.getText().toString());
+                                                                      hopperUpdates.put("phone", txtPhone.getText().toString());
+                                                                      hopperRef.updateChildren(hopperUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                                          @Override
+                                                                          public void onComplete(@NonNull Task<Void> task) {
+                                                                              finish();
+                                                                          }
+                                                                      });
                                                                   }
                                                               }
         );
@@ -241,8 +302,10 @@ public class ProfileActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == TAKE_PICTURE) {
             Uri imageUri = null;
+
             if (data != null) {
                 if (data.hasExtra("data")) {
+                    NEW_PHOTO_TAKEN = 1;
                     Bundle extras = data.getExtras();
                     imageBitmap = (Bitmap) extras.get("data");
                     findViewById(R.id.photoProfileP).setBackground(new BitmapDrawable(getResources(), imageBitmap));

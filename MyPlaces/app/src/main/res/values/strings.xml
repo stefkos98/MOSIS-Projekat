@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">My Places</string>
+    <string name="app_name">PetCare</string>
     <string name="action_settings">Settings</string>
     <string name="first_element">Show map!</string>
     <string name="second_element">New place!</string>

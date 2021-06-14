@@ -17,7 +17,7 @@ public class MyPlacesData {
     private ArrayList<MyPlace> myPlaces;
     private HashMap<String,Integer> myPlacesKeyIndexMapping;
     private DatabaseReference database;
-    private static final String FIREBASE_CHILD="my-places";
+    private static final String FIREBASE_CHILD="places";
     private MyPlacesData()
     {
         myPlaces=new ArrayList<>();
@@ -124,9 +124,14 @@ public class MyPlacesData {
         myPlaces.remove(index);
         recreateKeyIndexMapping();
     }
-    public void updatePlace(int index,String nme,String desc,String lng,String lat){
+    public void updatePlace(int index,String animalType,String desc,Boolean food,Boolean medicine,Boolean water,Boolean vet,Boolean adoption,String lng,String lat){
         MyPlace myPlace=myPlaces.get(index);
-        myPlace.name=nme;
+        myPlace.animalType=animalType;
+        myPlace.medicine=medicine;
+        myPlace.water=water;
+        myPlace.food=food;
+        myPlace.vet=vet;
+        myPlace.adoption=adoption;
         myPlace.description=desc;
         myPlace.longitude=lng;
         myPlace.latitude=lat;

@@ -67,7 +67,7 @@ public class RankActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int i, long l) {
                 MyPlace place=(MyPlace)parent.getAdapter().getItem(i);
-                Toast.makeText(getApplicationContext(),place.name+ " selected", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(),place.animalType+ " selected", Toast.LENGTH_SHORT).show();
             }
         });
         myPlacesList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -85,7 +85,7 @@ public class RankActivity extends AppCompatActivity {
             public void onCreateContextMenu(ContextMenu contextMenu, View view, ContextMenu.ContextMenuInfo contextMenuInfo){
                 AdapterView.AdapterContextMenuInfo info=(AdapterView.AdapterContextMenuInfo) contextMenuInfo;
                 MyPlace place=MyPlacesData.getInstance().getPlace(info.position);
-                contextMenu.setHeaderTitle(place.name);
+                contextMenu.setHeaderTitle(place.animalType);
                 contextMenu.add(0,1,1,"View Place");
                 contextMenu.add(0,2,2,"Edit place");
                 contextMenu.add(0,3,3,"Delete place");
