@@ -23,8 +23,8 @@ public class WelcomeActivity extends Activity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome);
 
-        btnLogin = findViewById(R.id.btnLogin);
-        btnRegister = findViewById(R.id.btnRegister);
+        btnLogin = findViewById(R.id.btnLoginW);
+        btnRegister = findViewById(R.id.btnRegisterW);
         mAuth = FirebaseAuth.getInstance();
 
         btnLogin.setOnClickListener(new View.OnClickListener()

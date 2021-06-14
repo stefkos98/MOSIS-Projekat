@@ -175,12 +175,11 @@
     </LinearLayout>
 
         <Button
-            android:layout_width="175"
-            android:layout_gravity="center"
+            android:layout_width="175dp"
             android:layout_height="match_parent"
+            android:layout_gravity="center"
             android:background="@color/red"
-            android:textColor="@color/white"
-            android:text="Unfriend">
-        </Button>
+            android:text="Unfriend"
+            android:textColor="@color/white"></Button>
     </com.google.android.material.appbar.AppBarLayout>
 </LinearLayout>

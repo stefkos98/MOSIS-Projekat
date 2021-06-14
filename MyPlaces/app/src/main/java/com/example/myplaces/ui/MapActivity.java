@@ -107,29 +107,14 @@ public class MapActivity extends AppCompatActivity {
 
         setSupportActionBar(binding.toolbar);
 
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_my_places_maps);
-        appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
-        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
-
         if(state!=SELECT_COORDINATES){
-            binding.fab.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent i = new Intent(MapActivity.this, AddCaseActivity.class);
-                    startActivityForResult(i, MapActivity.NEW_PLACE);
-                }
-            });
 
         }else{
-            ViewGroup layout=(ViewGroup)binding.fab.getParent();
-            if(null!=layout){
-                layout.removeView(binding.fab);
-            }
         }
 
         Context ctx=getApplicationContext();
         Configuration.getInstance().load(ctx, PreferenceManager.getDefaultSharedPreferences(ctx));
-        map=(MapView) findViewById(R.id.map);
+        map=(MapView) findViewById(R.id.mapM);
         map.setMultiTouchControls(true);
 
         if(ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)!= PackageManager.PERMISSION_GRANTED
@@ -218,66 +203,9 @@ public class MapActivity extends AppCompatActivity {
             return super.onCreateOptionsMenu(item);
         }
         else {
-            getMenuInflater().inflate(R.menu.menu_my_places_maps, item);
             return true;
         }
     }
-    @Override
-    public boolean onPrepareOptionsMenu(Menu item){
-        if(selCoorsEnabled) {
-            item.findItem(1).setEnabled(false);
-        }
-        return true;
-    }
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        if(state==SELECT_COORDINATES && !selCoorsEnabled){
-            if(id==1){
-                selCoorsEnabled=true;
-               // invalidateOptionsMenu();
-                Toast.makeText(this,"Select coordinates",Toast.LENGTH_SHORT).show();
-            }else if(id==2){
-                setResult(Activity.RESULT_CANCELED);
-                finish();
-            }
-        }
-        else if (state==SELECT_COORDINATES && selCoorsEnabled) {
-            if(id==2){
-                setResult(Activity.RESULT_CANCELED);
-                finish();
-            }
-        }
-        else {
-            if (id == R.id.second_setting) {
-                Intent i = new Intent(this, AddCaseActivity.class);
-                startActivityForResult(i, 1);
-            }
-            if (id == R.id.fourth_setting) {
-                Intent i = new Intent(this, FriendActivity.class);
-                startActivity(i);
-            }
-            if(id == R.id.fifth_setting)
-            {
-                Intent broadcastIntent = new Intent();
-                broadcastIntent.setAction("com.package.ACTION_LOGOUT");
-                sendBroadcast(broadcastIntent);
-                mAuth.signOut();
-                Intent logoutIntent = new Intent(MapActivity.this, WelcomeActivity.class);
-                logoutIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                startActivity(logoutIntent);
-                finish();
-            }
-        }
-        if (id == R.id.home) {
-            finish();
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
     @Override
     public boolean onSupportNavigateUp() {
         onBackPressed();

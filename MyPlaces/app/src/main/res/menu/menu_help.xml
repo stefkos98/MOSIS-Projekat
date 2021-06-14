@@ -5,6 +5,6 @@
     <item
         android:id="@+id/logoHelp"
         android:orderInCategory="1"
-        android:icon="@drawable/MOSIS_LOGO_TEKST"
+        android:icon="@drawable/mosis_logo_tekst"
         app:showAsAction="always" />
 </menu>

@@ -44,15 +44,6 @@ public class RankActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent i=new Intent(RankActivity.this, AddCaseActivity.class);
-                startActivityForResult(i,NEW_PLACE1);
-            }
-        });
-
         //  3. pod D instant ucitavanje liste
 
         database = FirebaseDatabase.getInstance().getReference().child("my-places");
@@ -70,7 +61,7 @@ public class RankActivity extends AppCompatActivity {
             }
         });
 
-        ListView myPlacesList=(ListView)findViewById(R.id.RankList);
+        ListView myPlacesList=(ListView)findViewById(R.id.listViewRank);
         myPlacesList.setAdapter(new ArrayAdapter<MyPlace>(this,android.R.layout.simple_list_item_1, MyPlacesData.getInstance().getMyPlaces()));
         myPlacesList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -154,7 +145,7 @@ public class RankActivity extends AppCompatActivity {
     }
 
     private void setList() {
-        ListView myPlacesList = (ListView) findViewById(R.id.RankList);
+        ListView myPlacesList = (ListView) findViewById(R.id.listViewRank);
         myPlacesList.setAdapter(new ArrayAdapter<MyPlace>(this, android.R.layout.simple_list_item_1,MyPlacesData.getInstance().getMyPlaces()));
     }
 
