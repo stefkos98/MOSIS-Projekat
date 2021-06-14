@@ -50,23 +50,23 @@
         android:singleLine="true">
     </EditText>
 
-  <EditText
-            android:id="@+id/txtEmailR"
-            android:layout_width="400dp"
-            android:layout_height="60dp"
-            android:hint="Email Address"
-            android:layout_gravity="center"
-            android:singleLine="true">
-        </EditText>
+    <EditText
+        android:id="@+id/txtEmailR"
+        android:layout_width="400dp"
+        android:layout_height="60dp"
+        android:layout_gravity="center"
+        android:hint="Email Address"
+        android:inputType="textEmailAddress"
+        android:singleLine="true"></EditText>
 
     <EditText
         android:id="@+id/txtPhoneR"
         android:layout_width="400dp"
         android:layout_height="60dp"
-        android:hint="Phone Number"
         android:layout_gravity="center"
-        android:singleLine="true">
-    </EditText>
+        android:hint="Phone Number"
+        android:inputType="phone"
+        android:singleLine="true"></EditText>
 
         <EditText
             android:id="@+id/txtPasswordR"
@@ -101,10 +101,11 @@
         android:gravity=""
         android:text="Take a Photo" />
     <ImageView
-        android:layout_marginLeft="50dp"
+        android:id="@+id/imageCreatePhoto"
+        android:layout_marginLeft="70dp"
         android:layout_gravity="right"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:background="@drawable/camera" />
 </LinearLayout>
       <Button

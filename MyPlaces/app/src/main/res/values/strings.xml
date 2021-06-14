@@ -39,7 +39,7 @@
     <string name="findFriends">Find Friends</string>
     <string name="friendRequests">Friend Requests</string>
     <string name="rank">Rank</string>
-    <string name="profile">profile</string>
+    <string name="profile">Profile</string>
     <string name="title_activity_friend_requests">FriendRequestsActivity</string>
     <string name="saveChanges">Save Changes</string>
     <string name="deleteProfile">Delete Profile</string>

@@ -4,16 +4,19 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Build;
 import android.os.Bundle;
 
 import com.example.myplaces.R;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -22,7 +25,7 @@ public class HomeActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        mAuth=FirebaseAuth.getInstance();
+        mAuth = FirebaseAuth.getInstance();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -34,12 +37,46 @@ public class HomeActivity extends AppCompatActivity {
         registerReceiver(new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                Log.d("onReceive","Logout in progress");
+                Log.d("onReceive", "Logout in progress");
                 //At this point you should start the login activity and finish this one
                 finish();
             }
         }, intentFilter);
-        //** snip **//
+        findViewById(R.id.btnFindFriendsH).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(HomeActivity.this, FindFriendsActivity.class);
+                startActivity(intent);
+            }
+        });
+        findViewById(R.id.btnShowMapH).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(HomeActivity.this, MyPlacesMapsActivity.class);
+                startActivity(intent);
+            }
+        });
+        findViewById(R.id.btnShowFriendsAndOtherUsersH).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(HomeActivity.this, FriendsMapActivity.class);
+                startActivity(intent);
+            }
+        });
+        findViewById(R.id.btnRankH).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(HomeActivity.this, RankActivity.class);
+                startActivity(intent);
+            }
+        });
+        findViewById(R.id.btnProfileH).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(HomeActivity.this, ProfileActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     @Override
@@ -48,33 +85,16 @@ public class HomeActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.menu_home, menu);
         return true;
     }
-    static int NEW_PLACE=1;
+
+    static int NEW_PLACE = 1;
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.first_setting) {
-            Intent i=new Intent(this,MyPlacesMapsActivity.class);
-            startActivity(i);
-        }
-        if (id == R.id.second_setting) {
-            Intent i=new Intent(this,EditMyPlaceActivity.class);
-            startActivityForResult(i,NEW_PLACE);
-        }
-        if (id == R.id.third_setting) {
-            Intent i=new Intent(this, RankActivity.class);
-            startActivity(i);
-        }
-        if (id == R.id.fourth_setting) {
-            Intent i=new Intent(this,About.class);
-            startActivity(i);
-        }
-        if(id == R.id.fifth_setting)
-        {
+        if (id == R.id.fifth_setting) {
             Intent broadcastIntent = new Intent();
             broadcastIntent.setAction("com.package.ACTION_LOGOUT");
             sendBroadcast(broadcastIntent);
