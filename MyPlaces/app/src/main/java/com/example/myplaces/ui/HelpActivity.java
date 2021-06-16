@@ -1,10 +1,13 @@
 package com.example.myplaces.ui;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.BitmapFactory;
@@ -36,21 +39,26 @@ import com.google.firebase.storage.StorageReference;
 import java.security.AuthProvider;
 
 public class HelpActivity extends AppCompatActivity {
+    MyPlace place;
     DatabaseReference database;
     StorageReference storage;
     FirebaseAuth mAuth;
     FirebaseUser user;
     int position = -1;
+    Boolean delete = false;
     TextView txt1, txt2, txt3, txt4, txt5;
     CheckBox check1, check2, check3, check4, check5;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        mAuth=FirebaseAuth.getInstance();
-        user=mAuth.getCurrentUser();
+        mAuth = FirebaseAuth.getInstance();
+        user = mAuth.getCurrentUser();
         database = FirebaseDatabase.getInstance().getReference();
         storage = FirebaseStorage.getInstance().getReference();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_help);
+        final Button finishedButton = (Button) findViewById(R.id.btnIHelpedHelp);
+        final Button finishedButton2 = (Button) findViewById(R.id.btnNotThereHelp);
         getSupportActionBar().setIcon(R.drawable.mosis_logo_tekst);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -59,9 +67,14 @@ public class HelpActivity extends AppCompatActivity {
             Intent listIntent = getIntent();
             Bundle positionBundle = listIntent.getExtras();
             position = positionBundle.getInt("position");
+            delete = positionBundle.getBoolean("delete");
+            if (delete) {
+                finishedButton.setText("Close");
+                finishedButton2.setText("Delete Ad");
+            }
             final long ONE_MEGABYTE = 1024 * 1024;
             if (position >= 0) {
-                MyPlace place = MyPlacesData.getInstance().getPlace(position);
+                place = MyPlacesData.getInstance().getPlace(position);
                 storage.child("animalimages").child(place.key + ".jpg").getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
                     @Override
                     public void onSuccess(byte[] bytes) {
@@ -97,28 +110,27 @@ public class HelpActivity extends AppCompatActivity {
                 check5 = findViewById(R.id.checkBoxAdoptionHelp);
                 if (place.food) {
                     check1.setChecked(false);
-                }
-                else{
+                } else {
                     check1.setEnabled(false);
                 }
                 if (place.medicine) {
                     check2.setChecked(false);
-                } else{
+                } else {
                     check2.setEnabled(false);
                 }
                 if (place.water) {
                     check3.setChecked(false);
-                } else{
+                } else {
                     check3.setEnabled(false);
                 }
                 if (place.vet) {
                     check4.setChecked(false);
-                } else{
+                } else {
                     check4.setEnabled(false);
                 }
                 if (place.adoption) {
                     check5.setChecked(false);
-                } else{
+                } else {
                     check5.setEnabled(false);
                 }
             }
@@ -127,27 +139,86 @@ public class HelpActivity extends AppCompatActivity {
             finish();
         }
 
-        final Button finishedButton = (Button) findViewById(R.id.btnIHelpedHelp);
+
         finishedButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //not finished
-                finish();
+                if (delete) {
+                    finish();
+                } else {
+                    database.child("users").child(user.getUid()).child("points").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<DataSnapshot> task) {
+                            int points = 0;
+                            Boolean food = place.food, medicine = place.medicine, water = place.water, vet = place.vet, adoption = place.adoption;
+                            if (check1.isChecked()) {
+                                points++;
+                                food = false;
+                            }
+                            if (check2.isChecked()) {
+                                points++;
+                                medicine = false;
+                            }
+                            if (check3.isChecked()) {
+                                points++;
+                                water = false;
+                            }
+                            if (check4.isChecked()) {
+                                points++;
+                                vet = false;
+                            }
+                            if (check5.isChecked()) {
+                                points++;
+                                adoption = false;
+                            }
+                            Long point = (Long) task.getResult().getValue();
+                            database.child("users").child(user.getUid()).child("points").setValue(point + points);
+                            MyPlacesData.getInstance().updatePlace(position, place.animalType, place.description, food, medicine, water, vet, adoption, place.longitude, place.latitude, place.uid);
+                            setResult(Activity.RESULT_OK);
+                            finish();
+                        }
+                    });
+                }
             }
         });
-        final Button finishedButton2 = (Button) findViewById(R.id.btnNotThereHelp);
         finishedButton2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                database.child("users").child(user.getUid()).child("points").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull  Task<DataSnapshot> task) {
-                       Long point=(Long) task.getResult().getValue();
-                        database.child("users").child(user.getUid()).child("points").setValue(point+1);
-                        MyPlacesData.getInstance().deletePlace(position);
-                        finish();
-                    }
-                });
+                if (delete) {
+                    new AlertDialog.Builder(HelpActivity.this)
+                            .setTitle("Delete Ad")
+                            .setMessage("Are you sure you want to delete this Ad?")
+
+                            // Specifying a listener allows you to take an action before dismissing the dialog.
+                            // The dialog is automatically dismissed when a dialog button is clicked.
+                            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int which) {
+                                    database.child("places").child(place.key).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                        }
+                                    });
+                                    setResult(Activity.RESULT_OK);
+                                    finish();
+                                }
+                            })
+                            // A null listener allows the button to dismiss the dialog and take no further action.
+                            .setNegativeButton("No", null)
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .show();
+
+                } else {
+                    database.child("users").child(user.getUid()).child("points").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<DataSnapshot> task) {
+                            Long point = (Long) task.getResult().getValue();
+                            database.child("users").child(user.getUid()).child("points").setValue(point + 1);
+                            MyPlacesData.getInstance().deletePlace(position);
+                            setResult(Activity.RESULT_OK);
+                            finish();
+                        }
+                    });
+                }
             }
         });
         IntentFilter intentFilter = new IntentFilter();

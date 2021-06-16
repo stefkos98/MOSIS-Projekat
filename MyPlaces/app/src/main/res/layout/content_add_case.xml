@@ -98,5 +98,5 @@
         android:background="@color/darkgreen"
         android:textSize="20dp"
         android:layout_gravity="center"
-        android:text="Make an Add"/>
+        android:text="Make an Ad"/>
 </LinearLayout>

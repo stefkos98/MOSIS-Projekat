@@ -52,7 +52,7 @@ import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
 import java.util.ArrayList;
 
-public class MapActivity extends AppCompatActivity  implements LocationListener {
+public class MapActivity extends AppCompatActivity implements LocationListener {
 
     FirebaseAuth mAuth;
     FirebaseUser user;
@@ -69,11 +69,12 @@ public class MapActivity extends AppCompatActivity  implements LocationListener 
     private Location location;
     LocationManager locationManager;
     protected LocationListener locationListener;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         mAuth = FirebaseAuth.getInstance();
-        user=mAuth.getCurrentUser();
+        user = mAuth.getCurrentUser();
         super.onCreate(savedInstanceState);
         // Listener za promenu liste
         MyPlacesData.getInstance().setEventListener(new MyPlacesData.ListUpdatedEventListener() {
@@ -125,9 +126,9 @@ public class MapActivity extends AppCompatActivity  implements LocationListener 
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(MapActivity.this, AddCaseActivity.class);
-                intent.putExtra("latitude",location.getLatitude());
-                intent.putExtra("longitude",location.getLongitude());
-                startActivityForResult(intent,1);
+                intent.putExtra("latitude", location.getLatitude());
+                intent.putExtra("longitude", location.getLongitude());
+                startActivityForResult(intent, 1);
             }
         });
     }
@@ -171,6 +172,7 @@ public class MapActivity extends AppCompatActivity  implements LocationListener 
         super.onPause();
         map.onPause();
     }
+
     private void setupMap() {
         setMyLocationOverlay();
         showMyPlaces();
@@ -189,20 +191,27 @@ public class MapActivity extends AppCompatActivity  implements LocationListener 
         myPlacesOverlay = new ItemizedIconOverlay<>(overlayArrayList, new ItemizedIconOverlay.OnItemGestureListener<OverlayItem>() {
             @Override
             public boolean onItemSingleTapUp(int index, OverlayItem item) {
-                float[] distance=new float[2];
+                float[] distance = new float[2];
                 MyPlace mp = MyPlacesData.getInstance().getPlace(index);
                 Location.distanceBetween(Double.parseDouble(mp.latitude),
                         Double.parseDouble(mp.longitude), location.getLatitude(),
                         location.getLongitude(), distance);
-
-                if (distance[0] > 10 || mp.uid.equals(user.getUid() )) {
+                if (mp.uid.equals(user.getUid())) {
+                    Intent intent = new Intent(MapActivity.this, HelpActivity.class);
+                    intent.putExtra("position", index);
+                    intent.putExtra("delete", true);
+                    startActivity(intent);
+                }
+                else if (distance[0] > 10) {
                     Intent intent = new Intent(MapActivity.this, ShowActivity.class);
                     intent.putExtra("position", index);
                     startActivity(intent);
-                }else {
+                }  else {
                     Intent intent = new Intent(MapActivity.this, HelpActivity.class);
                     intent.putExtra("position", index);
-                    startActivity(intent);                }
+                    intent.putExtra("delete", false);
+                    startActivity(intent);
+                }
 
                 return true;
             }
@@ -224,9 +233,10 @@ public class MapActivity extends AppCompatActivity  implements LocationListener 
         if (resultCode == Activity.RESULT_OK)
             showMyPlaces();
     }
+
     @Override
     public void onLocationChanged(Location location) {
-        this.location=location;
+        this.location = location;
         setMyLocationOverlay();
     }
 }

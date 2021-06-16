@@ -124,7 +124,7 @@ public class MyPlacesData {
         myPlaces.remove(index);
         recreateKeyIndexMapping();
     }
-    public void updatePlace(int index,String animalType,String desc,Boolean food,Boolean medicine,Boolean water,Boolean vet,Boolean adoption,String lng,String lat){
+    public void updatePlace(int index,String animalType,String desc,Boolean food,Boolean medicine,Boolean water,Boolean vet,Boolean adoption,String lng,String lat,String uid){
         MyPlace myPlace=myPlaces.get(index);
         myPlace.animalType=animalType;
         myPlace.medicine=medicine;
@@ -135,6 +135,7 @@ public class MyPlacesData {
         myPlace.description=desc;
         myPlace.longitude=lng;
         myPlace.latitude=lat;
+        myPlace.uid=uid;
         database.child(FIREBASE_CHILD).child(myPlace.key).setValue(myPlace);
     }
 
