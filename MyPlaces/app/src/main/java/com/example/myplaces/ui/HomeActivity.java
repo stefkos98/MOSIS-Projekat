@@ -1,5 +1,6 @@
 package com.example.myplaces.ui;
 
+import android.bluetooth.BluetoothAdapter;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -42,6 +43,7 @@ public class HomeActivity extends AppCompatActivity {
                 finish();
             }
         }, intentFilter);
+
         findViewById(R.id.btnFindFriendsH).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
