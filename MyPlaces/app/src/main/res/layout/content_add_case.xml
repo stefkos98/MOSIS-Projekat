@@ -24,17 +24,18 @@
             android:gravity=""
             android:text="@string/addAPhoto" />
         <ImageView
-            android:layout_marginStart="50dp"
+            android:id="@+id/imageAnimalCreatePhoto"
+            android:layout_marginStart="70dp"
             android:layout_gravity="end"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:background="@drawable/camera" />
     </LinearLayout>
-    <EditText
-        android:id="@+id/editTextTypeOfAnymalAC"
+    <Spinner
+        android:id="@+id/animaltype_spinnerAC"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:hint="Type of Anymal"/>
+        android:hint="Type of Animal"/>
     <EditText
         android:gravity="top|start"
         android:id="@+id/editTextDescribeProblemAC"

@@ -46,4 +46,13 @@
     <string name="takeAPhoto">Take a Photo</string>
     <string name="addAPhoto">Add a Photo</string>
     <string name="add_label">Add   +</string>
+    <string-array name="amimals_array">
+        <item>Dog</item>
+        <item>Cat</item>
+        <item>Bird</item>
+        <item>Rabbit</item>
+        <item>Tortoise</item>
+        <item>Horse</item>
+        <item>Guinnea pig</item>
+    </string-array>
 </resources>

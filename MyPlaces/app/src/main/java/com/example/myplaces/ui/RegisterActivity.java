@@ -211,6 +211,7 @@ public class RegisterActivity extends Activity {
 
                             });
                             // Kraj uploadovanja slike
+                            database.child("users").child(mAuth.getUid().toString()).child("points").setValue(0);
                             database.child("users").child(mAuth.getUid().toString()).child("email").setValue(email);
                             database.child("users").child(mAuth.getUid().toString()).child("username").setValue(username);
                             database.child("users").child(mAuth.getUid().toString()).child("firstName").setValue(firstName);

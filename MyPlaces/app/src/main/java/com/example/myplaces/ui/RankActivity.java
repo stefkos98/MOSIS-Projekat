@@ -135,7 +135,6 @@ public class RankActivity extends AppCompatActivity {
         }
         else if(item.getItemId()==4){
             i=new Intent(this, MapActivity.class);
-            i.putExtra("state", MapActivity.CENTER_PLACE_ON_MAP);
             MyPlace place=MyPlacesData.getInstance().getPlace(info.position);
             i.putExtra("lat",place.latitude);
             i.putExtra("lon",place.longitude);
