@@ -5,14 +5,16 @@ package="com.example.myplaces">
 <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
 <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.BLUETOOTH" />
-    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
-    <uses-permission android:name="android.permission.INTERNET" />
+<uses-permission android:name="android.permission.BLUETOOTH" />
+<uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+<uses-permission android:name="android.permission.INTERNET" />
 <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-<uses-permission android:name="android.permission.CAMERA"/>
+<uses-permission android:name="android.permission.CAMERA" />
+
 <uses-sdk android:targetSdkVersion="NEWEST AVAILABLE" />
-    <uses-feature android:name="android.hardware.camera"
-        android:required="true" />
+<uses-feature
+    android:name="android.hardware.camera"
+    android:required="true" />
 <application
     android:allowBackup="true"
     android:icon="@mipmap/mosis_logo"
@@ -65,5 +67,8 @@ package="com.example.myplaces">
     <activity android:name="com.example.myplaces.ui.FriendsMapActivity"></activity>
     <activity android:name="com.example.myplaces.ui.ShowActivity"></activity>
     <activity android:name="com.example.myplaces.ui.HelpActivity"></activity>
+    <activity android:name="com.example.myplaces.ui.FiltersActivity"
+        android:theme="@style/Theme.AppCompat.Light.Dialog"></activity>
+
 </application>
 </manifest>

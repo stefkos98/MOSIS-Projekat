@@ -23,12 +23,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.preference.PreferenceManager;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.SearchView;
 import android.widget.Toast;
-
 import androidx.core.app.ActivityCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -52,7 +50,7 @@ import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
 import java.util.ArrayList;
 
-public class MapActivity extends AppCompatActivity implements LocationListener {
+public class MapActivity extends AppCompatActivity implements LocationListener,SearchView.OnQueryTextListener {
 
     FirebaseAuth mAuth;
     FirebaseUser user;
@@ -69,7 +67,10 @@ public class MapActivity extends AppCompatActivity implements LocationListener {
     private Location location;
     LocationManager locationManager;
     protected LocationListener locationListener;
-
+    ArrayList<MyPlace> searchResults;
+    ArrayList<Integer> indexes;
+    Boolean food=true,medicine=true,water=true,vet=true,adoption=true;
+    String animalType="All";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -80,16 +81,13 @@ public class MapActivity extends AppCompatActivity implements LocationListener {
         MyPlacesData.getInstance().setEventListener(new MyPlacesData.ListUpdatedEventListener() {
             @Override
             public void onListUpdated() {
-                setupMap();
+                if(state==1) showMyPlacesSearchResults(); else setupMap();
             }
         });
 
         //
         binding = ActivityMapBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-       /* NavController navController = Navigation.findNavController(this, R.id.navnav_host_fragment_content_my_places_maps);
-        appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
-        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);*/
         //mapa
         Context ctx = getApplicationContext();
         Configuration.getInstance().load(ctx, PreferenceManager.getDefaultSharedPreferences(ctx));
@@ -129,6 +127,21 @@ public class MapActivity extends AppCompatActivity implements LocationListener {
                 intent.putExtra("latitude", location.getLatitude());
                 intent.putExtra("longitude", location.getLongitude());
                 startActivityForResult(intent, 1);
+            }
+        });
+        SearchView editsearch = findViewById(R.id.searchViewM);
+        editsearch.setOnQueryTextListener(this);
+        findViewById(R.id.btnFiltersM).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i=new Intent(MapActivity.this,FiltersActivity.class);
+                i.putExtra("vet",vet);
+                i.putExtra("food",food);
+                i.putExtra("medicine",medicine);
+                i.putExtra("animalType",animalType);
+                i.putExtra("water",water);
+                i.putExtra("adoption",adoption);
+                startActivityForResult(i,555);
             }
         });
     }
@@ -226,11 +239,66 @@ public class MapActivity extends AppCompatActivity implements LocationListener {
         }, getApplicationContext());
         this.map.getOverlays().add(myPlacesOverlay);
     }
+    private void showMyPlacesSearchResults(){
+        if (myPlacesOverlay != null)
+            map.getOverlays().remove(myPlacesOverlay);
+        final ArrayList<OverlayItem> overlayArrayList = new ArrayList<>();
+        for (int i = 0; i < searchResults.size(); i++) {
+            MyPlace mp = searchResults.get(i);
+            OverlayItem overlayItem = new OverlayItem(mp.animalType, mp.description, new GeoPoint(Double.parseDouble(mp.latitude), Double.parseDouble(mp.longitude)));
+            overlayItem.setMarker(this.getResources().getDrawable(R.drawable.baseline_myplace));
+            overlayArrayList.add(overlayItem);
+        }
+        myPlacesOverlay = new ItemizedIconOverlay<>(overlayArrayList, new ItemizedIconOverlay.OnItemGestureListener<OverlayItem>() {
+            @Override
+            public boolean onItemSingleTapUp(int index, OverlayItem item) {
+                float[] distance = new float[2];
+                MyPlace mp = searchResults.get(index);
+                Location.distanceBetween(Double.parseDouble(mp.latitude),
+                        Double.parseDouble(mp.longitude), location.getLatitude(),
+                        location.getLongitude(), distance);
+                if (mp.uid.equals(user.getUid())) {
+                    Intent intent = new Intent(MapActivity.this, HelpActivity.class);
+                    intent.putExtra("position", indexes.get(index));
+                    intent.putExtra("delete", true);
+                    startActivity(intent);
+                }
+                else if (distance[0] > 10) {
+                    Intent intent = new Intent(MapActivity.this, ShowActivity.class);
+                    intent.putExtra("position", indexes.get(index));
+                    startActivity(intent);
+                }  else {
+                    Intent intent = new Intent(MapActivity.this, HelpActivity.class);
+                    intent.putExtra("position", indexes.get(index));
+                    intent.putExtra("delete", false);
+                    startActivity(intent);
+                }
 
+                return true;
+            }
+
+            @Override
+            public boolean onItemLongPress(int index, OverlayItem item) {
+                Intent intent = new Intent(MapActivity.this, AddCaseActivity.class);
+                intent.putExtra("position", index);
+                startActivityForResult(intent, 5);
+                return true;
+            }
+        }, getApplicationContext());
+        this.map.getOverlays().add(myPlacesOverlay);
+    }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == Activity.RESULT_OK)
+
+        if (requestCode==555){                Toast.makeText(getApplicationContext(),"CAO SVIMA",Toast.LENGTH_SHORT).show();
+                food=data.getBooleanExtra("food",false);
+                medicine=data.getBooleanExtra("medicine",false);
+                water=data.getBooleanExtra("water",false);
+                vet=data.getBooleanExtra("vet",false);
+                adoption=data.getBooleanExtra("adoption",false);
+                animalType=data.getStringExtra("animalType");
+        }    else if (resultCode == Activity.RESULT_OK)
             showMyPlaces();
     }
 
@@ -238,5 +306,43 @@ public class MapActivity extends AppCompatActivity implements LocationListener {
     public void onLocationChanged(Location location) {
         this.location = location;
         setMyLocationOverlay();
+    }
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        ArrayList data=MyPlacesData.getInstance().getMyPlaces();
+        searchResults=new ArrayList<>();
+        indexes=new ArrayList<Integer>();
+        try {
+            Double radius = Double.valueOf(query);
+            for (int i = 0; i < data.size(); i++) {
+                MyPlace current=(MyPlace) data.get(i);
+                float[] distance = new float[2];
+                Location.distanceBetween(Double.parseDouble(current.latitude),
+                        Double.parseDouble(current.longitude), location.getLatitude(),
+                        location.getLongitude(), distance);
+                if (distance[0] <= radius) {
+                    if(!animalType.equals("All")&&!current.animalType.equals(animalType)){
+                        continue;
+                    }
+                    if((current.food==food && food)||(current.water==water && water)||(current.medicine==medicine && medicine)||
+                            (current.adoption==adoption && adoption)||(current.vet==vet && vet)){
+                        searchResults.add(current);
+                        indexes.add(i);
+                    }
+                }
+            }
+            showMyPlacesSearchResults();
+        }
+        catch(Exception e){
+            Toast.makeText(this,"Bad radius value",Toast.LENGTH_SHORT).show();
+        }
+        return false;
+
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        String text = newText;
+        return false;
     }
 }

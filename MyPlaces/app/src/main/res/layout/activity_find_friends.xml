@@ -13,32 +13,22 @@
       android:layout_width="230dp"
       android:layout_height="230dp"
       android:layout_gravity="center"
-      android:background="@drawable/MOSIS_LOGO_TEKST"/>
+      android:background="@drawable/mosis_logo_tekst"/>
 
   <EditText
       android:id="@+id/editTextFF"
+      android:layout_marginBottom="15dp"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
-      android:text="First Name:" />
+      android:hint="Enter First Name:" />
 
   <Button
       android:id="@+id/btnFindFriendsFF"
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:background="@color/lightgreen"
+      android:layout_marginBottom="10dp"
       android:text="Find Friends" />
-
-  <TextView
-      android:id="@+id/txtFF"
-      android:layout_width="220dp"
-      android:layout_height="0dp"
-      android:text="Name:" />
-  <Button
-      android:id="@+id/btnFF"
-      android:layout_width="100dp"
-      android:layout_height="0dp"
-      android:background="@color/darkgreen"
-      android:text="Add Friend" />
 
   <ListView
       android:id="@+id/listViewFF"
