@@ -16,7 +16,7 @@
       android:background="@drawable/mosis_logo_tekst"/>
 
   <ListView
-      android:id="@+id/ListViewFR"
+      android:id="@+id/listViewFR"
       android:layout_width="match_parent"
       android:layout_height="match_parent" />
 </LinearLayout>
