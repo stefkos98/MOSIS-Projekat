@@ -52,7 +52,7 @@ package="com.example.myplaces">
     <activity
         android:name=".ui.FriendActivity"
         android:label="About"
-        android:theme="@style/Theme.AppCompat.Light.Dialog" />
+        android:theme="@style/AppTheme.NoActionBar" />
     <activity android:name="com.example.myplaces.ui.LoginActivity"></activity>
     <activity android:name="com.example.myplaces.ui.WelcomeActivity">
         <intent-filter>
@@ -64,7 +64,8 @@ package="com.example.myplaces">
     <activity android:name="com.example.myplaces.ui.RegisterActivity"></activity>
     <activity android:name="com.example.myplaces.ui.FriendRequestsActivity"></activity>
     <activity android:name="com.example.myplaces.ui.FindFriendsActivity"></activity>
-    <activity android:name="com.example.myplaces.ui.FriendsMapActivity"></activity>
+    <activity android:name="com.example.myplaces.ui.FriendsMapActivity"
+        android:theme="@style/AppTheme.NoActionBar" />
     <activity android:name="com.example.myplaces.ui.ShowActivity"></activity>
     <activity android:name="com.example.myplaces.ui.HelpActivity"></activity>
     <activity android:name="com.example.myplaces.ui.FiltersActivity"

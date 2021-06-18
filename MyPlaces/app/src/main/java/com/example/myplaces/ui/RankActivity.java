@@ -1,20 +1,24 @@
 package com.example.myplaces.ui;
 
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-
 import com.example.myplaces.R;
 import com.example.myplaces.models.MyPlace;
 import com.example.myplaces.models.MyPlacesData;
+import com.example.myplaces.models.User;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import androidx.annotation.NonNull;
@@ -30,123 +34,85 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
-public class RankActivity extends AppCompatActivity {
+import java.util.ArrayList;
+import java.util.Collections;
+
+public class RankActivity extends Activity {
     DatabaseReference database;
     FirebaseAuth mAuth;
+    ArrayList<String> lista;
+    ArrayList<String> lista2;
+    ArrayList<String> lista3,lista4;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        mAuth=FirebaseAuth.getInstance();
+        lista = new ArrayList<>();
+        lista2=new ArrayList<>();
+        lista3=new ArrayList<>();
+        lista4=new ArrayList<>();
+        mAuth = FirebaseAuth.getInstance();
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_rank);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        setContentView(R.layout.content_rank);
 
-        //  3. pod D instant ucitavanje liste
-
-        database = FirebaseDatabase.getInstance().getReference().child("my-places");
-        database.addValueEventListener(new ValueEventListener()
-        {
+        ListView myPlacesList = (ListView) findViewById(R.id.listViewRank);
+        database = FirebaseDatabase.getInstance().getReference();
+        database.child("users").orderByChild("points").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot)
-            {
-                setList();
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-
-        ListView myPlacesList=(ListView)findViewById(R.id.listViewRank);
-        myPlacesList.setAdapter(new ArrayAdapter<MyPlace>(this,android.R.layout.simple_list_item_1, MyPlacesData.getInstance().getMyPlaces()));
-        myPlacesList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int i, long l) {
-                MyPlace place=(MyPlace)parent.getAdapter().getItem(i);
-                Toast.makeText(getApplicationContext(),place.animalType+ " selected", Toast.LENGTH_SHORT).show();
-            }
-        });
-        myPlacesList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Bundle positionBundle=new Bundle();
-                positionBundle.putInt("position",position);
-                Intent intent=new Intent(RankActivity.this, ProfileActivity.class);
-                intent.putExtras(positionBundle);
-                startActivity(intent);
-            }
-        });
-        myPlacesList.setOnCreateContextMenuListener(new View.OnCreateContextMenuListener(){
-            @Override
-            public void onCreateContextMenu(ContextMenu contextMenu, View view, ContextMenu.ContextMenuInfo contextMenuInfo){
-                AdapterView.AdapterContextMenuInfo info=(AdapterView.AdapterContextMenuInfo) contextMenuInfo;
-                MyPlace place=MyPlacesData.getInstance().getPlace(info.position);
-                contextMenu.setHeaderTitle(place.animalType);
-                contextMenu.add(0,1,1,"View Place");
-                contextMenu.add(0,2,2,"Edit place");
-                contextMenu.add(0,3,3,"Delete place");
-                contextMenu.add(0,4,4,"Show on map");
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                int size=0,index=0;
+                for (DataSnapshot postSnapshot : task.getResult().getChildren()) {
+                    User u = postSnapshot.getValue(User.class);
+                        lista.add(String.valueOf(u.points));
+                        lista2.add(u.username);
+                        if (u.email.equals(FirebaseAuth.getInstance().getCurrentUser().getEmail())) {
+                            index=size;
+                        }
+                        size++;
+                    }
+                Collections.reverse(lista);
+                Collections.reverse(lista2);
+                index=(size-1)-index;
+                if(index<7){
+                    for(int i=0;i<index;i++){
+                        lista3.add(lista.get(i));
+                        lista4.add(lista2.get(i));
+                    }
+                    for(int i=index;i<5;i++){
+                        lista3.add(lista.get(i));
+                        lista4.add(lista2.get(i));
+                    }
+                }
+                else{
+                    for(int i=0;i<5;i++){
+                        lista3.add(lista.get(i));
+                        lista4.add(lista2.get(i));
+                    }
+                    lista3.add(". . .");
+                    lista4.add(". . .");
+                    lista3.add(lista.get(index-1));
+                    lista4.add(lista2.get(index-1));
+                    lista3.add(lista.get(index));
+                    lista4.add(lista2.get(index));
+                    if(index!=size-1){
+                        lista3.add(lista.get(index+1));
+                        lista4.add(lista2.get(index+1));
+                    }
+                }
+                myPlacesList.setAdapter(new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_list_item_1, lista3));
             }
         });
+
         /**snip **/
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction("com.package.ACTION_LOGOUT");
         registerReceiver(new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                Log.d("onReceive","Logout in progress");
+                Log.d("onReceive", "Logout in progress");
                 //At this point you should start the login activity and finish this one
                 finish();
             }
         }, intentFilter);
         //** snip **//
     }
-
-
-    static int NEW_PLACE1=1;
-    @Override
-    public boolean onSupportNavigateUp() {
-        onBackPressed();
-        return true;
-    }
-    @Override
-    public boolean onContextItemSelected(MenuItem item){
-        AdapterView.AdapterContextMenuInfo info=(AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
-        Bundle positionBundle=new Bundle();
-        positionBundle.putInt("position",info.position);
-        Intent i=null;
-        if(item.getItemId()==1){
-            i=new Intent(this, ProfileActivity.class);
-            i.putExtras(positionBundle);
-            startActivity(i);
-        }
-        else if(item.getItemId()==2){
-            i=new Intent(this, AddCaseActivity.class);
-            i.putExtras(positionBundle);
-            startActivityForResult(i,1);
-        }
-        else if(item.getItemId()==3){
-            MyPlacesData.getInstance().deletePlace(info.position);
-            setList();
-        }
-        else if(item.getItemId()==4){
-            i=new Intent(this, MapActivity.class);
-            MyPlace place=MyPlacesData.getInstance().getPlace(info.position);
-            i.putExtra("lat",place.latitude);
-            i.putExtra("lon",place.longitude);
-            startActivityForResult(i,2);
-        }
-        return super.onContextItemSelected(item);
-    }
-
-    private void setList() {
-        ListView myPlacesList = (ListView) findViewById(R.id.listViewRank);
-        myPlacesList.setAdapter(new ArrayAdapter<MyPlace>(this, android.R.layout.simple_list_item_1,MyPlacesData.getInstance().getMyPlaces()));
-    }
-
 
 }

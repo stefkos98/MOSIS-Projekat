@@ -7,15 +7,11 @@
     android:background="@color/background"
     tools:context=".ui.FriendsMapActivity">
 
-  <fragment
-      android:id="@+id/nav_host_fragmentFM"
-      android:name="androidx.navigation.fragment.NavHostFragment"
-      android:layout_width="0dp"
-      android:layout_height="0dp" />
 
   <org.osmdroid.views.MapView
       android:id="@+id/mapFM"
       android:layout_width="match_parent"
-      android:layout_height="match_parent" >
+      android:layout_height="match_parent"
+      tilesource="Mapnik">
   </org.osmdroid.views.MapView>
 </FrameLayout>
