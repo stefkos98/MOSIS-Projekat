@@ -50,6 +50,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -184,7 +185,7 @@ public class ProfileActivity extends AppCompatActivity {
                                                                                   .addOnCompleteListener(new OnCompleteListener<Void>() {
                                                                                       @Override
                                                                                       public void onComplete(@NonNull Task<Void> task) {
-                                                                                          if(task.isSuccessful()) {
+                                                                                          if (task.isSuccessful()) {
                                                                                               Log.d("TAG", "User re-authenticated.");
                                                                                               user.updatePassword(txtPassword2.getText().toString()).addOnCompleteListener(new OnCompleteListener<Void>() {
                                                                                                   @Override
@@ -198,15 +199,16 @@ public class ProfileActivity extends AppCompatActivity {
                                                                                                       }
                                                                                                   }
                                                                                               });
-                                                                                          }else{
+                                                                                          } else {
                                                                                               Toast.makeText(getApplicationContext(), "Wrong password! Password not changed", Toast.LENGTH_SHORT).show();
-                                                                                                return;
+                                                                                              return;
                                                                                           }
                                                                                       }
                                                                                   });
                                                                       }
                                                                       DatabaseReference hopperRef = database.child("users").child(uid);
                                                                       Map<String, Object> hopperUpdates = new HashMap<>();
+                                                                      hopperUpdates.put("share",((Switch)findViewById(R.id.switch2)).isChecked());
                                                                       hopperUpdates.put("firstName", txtFirstName.getText().toString());
                                                                       hopperUpdates.put("lastName", txtLastName.getText().toString());
                                                                       hopperUpdates.put("phone", txtPhone.getText().toString());
