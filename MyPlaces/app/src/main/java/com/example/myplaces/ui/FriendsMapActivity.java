@@ -294,18 +294,8 @@ public class FriendsMapActivity extends AppCompatActivity implements LocationLis
                             "Yes",
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int id) {
-                                    String entry = mp.username;
-                                    final String[] id1 = {null};
-                                    database.child("usernames").child(entry).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<DataSnapshot> task) {
-                                            if (task.getResult().getValue() != null) {
-                                                id1[0] = (String) task.getResult().getValue();
-                                                database.child("users").child(id1[0]).child("requests").child(uid).setValue(ulogovanUser.username);
-                                            }
-                                            dialog.cancel();
-                                        }
-                                    });
+                                    database.child("users").child(mp.key).child("requests").child(uid).setValue(ulogovanUser.username);
+                                    dialog.cancel();
                                 }
                             });
 
