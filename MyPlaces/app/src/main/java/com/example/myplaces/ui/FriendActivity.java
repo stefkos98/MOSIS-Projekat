@@ -21,8 +21,10 @@ import com.example.myplaces.models.MyPlace;
 import com.example.myplaces.models.MyPlacesData;
 import com.example.myplaces.models.User;
 import com.example.myplaces.models.UsersData;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
@@ -94,8 +96,18 @@ public class FriendActivity extends AppCompatActivity {
                 btnUnfriend.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        database.child("users").child(uid).child("friends").child(user.key).removeValue();
-                        database.child("users").child(user.key).child("friends").child(uid).removeValue();
+                        database.child("users").child(uid).child("friends").child(user.key).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull  Task<Void> task) {
+                                database.child("users").child(user.key).child("friends").child(uid).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        finish();
+                                    }
+                                });
+
+                            }
+                        });
                     }
 
                 });

@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+
 import com.example.myplaces.R;
 import com.example.myplaces.models.MyPlace;
 import com.example.myplaces.models.MyPlacesData;
@@ -27,11 +28,18 @@ import androidx.appcompat.widget.Toolbar;
 
 import android.util.Log;
 import android.view.ContextMenu;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -42,13 +50,15 @@ public class RankActivity extends Activity {
     FirebaseAuth mAuth;
     ArrayList<String> lista;
     ArrayList<String> lista2;
-    ArrayList<String> lista3,lista4;
+    ArrayList<String> lista3, lista4, lista5;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         lista = new ArrayList<>();
-        lista2=new ArrayList<>();
-        lista3=new ArrayList<>();
-        lista4=new ArrayList<>();
+        lista2 = new ArrayList<>();
+        lista3 = new ArrayList<>();
+        lista4 = new ArrayList<>();
+        lista5 = new ArrayList<>();
         mAuth = FirebaseAuth.getInstance();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.content_rank);
@@ -58,46 +68,54 @@ public class RankActivity extends Activity {
         database.child("users").orderByChild("points").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DataSnapshot> task) {
-                int size=0,index=0;
+                int size = 0, index = 0;
+                String usrnm=null;
                 for (DataSnapshot postSnapshot : task.getResult().getChildren()) {
                     User u = postSnapshot.getValue(User.class);
-                        lista.add(String.valueOf(u.points));
-                        lista2.add(u.username);
-                        if (u.email.equals(FirebaseAuth.getInstance().getCurrentUser().getEmail())) {
-                            index=size;
-                        }
-                        size++;
+                    lista.add(String.valueOf(u.points));
+                    lista2.add(u.username);
+                    if (u.email.equals(FirebaseAuth.getInstance().getCurrentUser().getEmail())) {
+                        index = size;
+                        usrnm=u.username;
                     }
+                    size++;
+                }
                 Collections.reverse(lista);
                 Collections.reverse(lista2);
-                index=(size-1)-index;
-                if(index<7){
-                    for(int i=0;i<index;i++){
+                index = (size - 1) - index;
+                if (index < 7) {
+                    for (int i = 0; i <= index; i++) {
                         lista3.add(lista.get(i));
                         lista4.add(lista2.get(i));
+                        lista5.add(String.valueOf(i+1));
                     }
-                    for(int i=index;i<5;i++){
+                    for (int i = index+1; i < 5; i++) {
                         lista3.add(lista.get(i));
                         lista4.add(lista2.get(i));
+                        lista5.add(String.valueOf(i+1));
                     }
-                }
-                else{
-                    for(int i=0;i<5;i++){
+                } else {
+                    for (int i = 0; i < 5; i++) {
                         lista3.add(lista.get(i));
                         lista4.add(lista2.get(i));
+                        lista5.add(String.valueOf(i+1));
                     }
                     lista3.add(". . .");
                     lista4.add(". . .");
-                    lista3.add(lista.get(index-1));
-                    lista4.add(lista2.get(index-1));
+                    lista5.add(" ");
+                    lista3.add(lista.get(index - 1));
+                    lista4.add(lista2.get(index - 1));
+                    lista5.add(String.valueOf(index));
                     lista3.add(lista.get(index));
                     lista4.add(lista2.get(index));
-                    if(index!=size-1){
-                        lista3.add(lista.get(index+1));
-                        lista4.add(lista2.get(index+1));
+                    lista5.add(String.valueOf(index+1));
+                    if (index != size - 1) {
+                        lista3.add(lista.get(index + 1));
+                        lista4.add(lista2.get(index + 1));
+                        lista5.add(String.valueOf(index + 2));
                     }
                 }
-                myPlacesList.setAdapter(new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_list_item_1, lista3));
+                myPlacesList.setAdapter(new MyListAdapter(usrnm, lista3, lista4, lista5, getApplicationContext()));
             }
         });
 
@@ -115,4 +133,54 @@ public class RankActivity extends Activity {
         //** snip **//
     }
 
+
+    private class MyListAdapter extends BaseAdapter implements ListAdapter {
+        ArrayList<String> lista3 = new ArrayList<String>();
+        ArrayList<String> lista4 = new ArrayList<String>();
+        ArrayList<String> lista5 = new ArrayList<String>();
+        String i;
+        private Context context;
+
+        private MyListAdapter(String usrnm, ArrayList<String> lista3, ArrayList<String> lista4, ArrayList<String> lista5, Context context) {
+            this.i = usrnm;
+            this.lista3 = lista3;
+            this.lista4 = lista4;
+            this.lista5 = lista5;
+            this.context = context;
+        }
+
+        @Override
+        public int getCount() {
+            return lista3.size();
+        }
+
+        @Override
+        public Object getItem(int i) {
+            return lista3.get(i);
+        }
+
+        @Override
+        public long getItemId(int i) {
+            return 0;
+        }
+
+        @Override
+        public View getView(final int position, View convertView, ViewGroup parent) {
+            View view = convertView;
+            if (view == null) {
+                LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                view = inflater.inflate(R.layout.for_adapter3, null);
+            }
+            TextView txt1 = (TextView) view.findViewById(R.id.txt1Rank);
+            TextView txt2 = (TextView) view.findViewById(R.id.txt2Rank);
+            TextView txt3 = (TextView) view.findViewById(R.id.txt3Rank);
+            txt1.setText(this.lista5.get(position));
+            txt2.setText(this.lista4.get(position));
+            txt3.setText(this.lista3.get(position));
+            if (i.equals(lista4.get(position))) {
+                ((LinearLayout) view.findViewById(R.id.linearRank)).setBackgroundColor(getResources().getColor(R.color.lightgreen));
+            }
+            return view;
+        }
+    }
 }
