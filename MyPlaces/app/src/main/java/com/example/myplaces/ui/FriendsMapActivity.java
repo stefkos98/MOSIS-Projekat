@@ -3,17 +3,13 @@ package com.example.myplaces.ui;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.navigation.ui.AppBarConfiguration;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.BitmapFactory;
@@ -24,18 +20,8 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.util.Log;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
-import android.widget.PopupMenu;
-import android.widget.SearchView;
-import android.widget.Toast;
 
 import com.example.myplaces.R;
-import com.example.myplaces.databinding.ActivityMapBinding;
-import com.example.myplaces.models.MyPlace;
-import com.example.myplaces.models.MyPlacesData;
 import com.example.myplaces.models.User;
 import com.example.myplaces.models.UsersData;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -61,6 +47,7 @@ import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 public class FriendsMapActivity extends AppCompatActivity implements LocationListener {
     MapView map = null;
@@ -85,7 +72,7 @@ public class FriendsMapActivity extends AppCompatActivity implements LocationLis
     StorageReference storageRef;
     HashMap<String, Drawable> hm;
     ArrayList<OverlayItem> overlayArrayList;
-    Resources blabla;
+    Resources Resources;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,13 +83,6 @@ public class FriendsMapActivity extends AppCompatActivity implements LocationLis
         map = (MapView) findViewById(R.id.mapFM);
         map.setMultiTouchControls(true);
 
-        // gde da pokazuje mapa
-        mapController = map.getController();
-        if (mapController != null) {
-            mapController.setZoom(15.0);
-            GeoPoint startPoint = new GeoPoint(43.3209, 21.8958);
-            mapController.setCenter(startPoint);
-        }
         database = FirebaseDatabase.getInstance().getReference();
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         storageRef = FirebaseStorage.getInstance().getReference();
@@ -115,10 +95,18 @@ public class FriendsMapActivity extends AppCompatActivity implements LocationLis
         friendids = new ArrayList<>();
         notfriendids = new ArrayList<>();
         hm = new HashMap<>();
-        blabla = this.getResources();
+        Resources = this.getResources();
+
+        ulogovanUser = database.child("users").child(uid).get().getResult().getValue(User.class);
+
+        mapController = map.getController();
+        if (mapController != null) {
+            mapController.setZoom(14.0);
+            GeoPoint startPoint = new GeoPoint(43.3209, 21.8958);
+            mapController.setCenter(startPoint);
+        }
 
         overlayArrayList = new ArrayList<>();
-
         if (myUsersOverlay != null)
             map.getOverlays().remove(myUsersOverlay);
         UsersData.getInstance().setEventListener(new UsersData.ListUpdatedEventListener() {
@@ -135,76 +123,10 @@ public class FriendsMapActivity extends AppCompatActivity implements LocationLis
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 500, 5, (LocationListener) this);
         }
 
-        database.child("users").child(uid).child("friends").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DataSnapshot> task) {
-                for (DataSnapshot postSnapshot : task.getResult().getChildren()) {
-                    String id2 = postSnapshot.getKey();
-                    ids.add(id2);
-                }
-                database.child("users").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<DataSnapshot> task2) {
-                        for (DataSnapshot postSnapshot : task2.getResult().getChildren()) {
-                            User u = postSnapshot.getValue(User.class);
-                            String idu = postSnapshot.getKey();
-                            if (idu.equals(uid)) ulogovanUser = u;
-                            else {
-                                boolean t = false; //false=notfriends, true=friends
-                                for (String i : ids)
-                                    if (i.equals(idu)) {
-                                        t = true;
-                                        break;
-                                    }
-                                if (t) {
-                                    friends.add(u);
-                                    friendids.add(idu);
-                                } else {
-                                    if (u.requests != null && !u.requests.containsKey(uid)) {
-                                        notfriends.add(u);
-                                        notfriendids.add(idu);
-                                    }
-                                }
-                            }
-                        }
-                        for (int i = 0; i < UsersData.getInstance().getUsers().size(); i++) {
-                            User mp = UsersData.getInstance().getUser(i);
-                            final long ONE_MEGABYTE = 1024 * 1024;
-                            storageRef.child("images").child(mp.email + ".jpg").getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
-                                @Override
-                                public void onSuccess(byte[] bytes) {
-                                    Drawable image = new BitmapDrawable(getResources(), BitmapFactory.decodeByteArray(bytes, 0, bytes.length));
-                                    image.setBounds(0, 0, 50, 50);
-                                    OverlayItem overlayItem = new OverlayItem(mp.username, mp.email, new GeoPoint(Double.parseDouble(mp.latitude), Double.parseDouble(mp.longitude)));
-                                    if (mp.key.equals(uid))
-                                        overlayItem.setMarker(blabla.getDrawable(R.drawable.current_user));
-                                    else {
-                                        boolean t = false; //false=notfriends, true=friends
-                                        for (User u : friends)
-                                            if (u.email.equals(mp.email)) {
-                                                t = true;
-                                                break;
-                                            }
-                                        if (t) {
-                                            overlayItem.setMarker(image);
-                                        } else {
-                                            overlayItem.setMarker(blabla.getDrawable(R.drawable.user));
-                                        }
-                                    }
-                                    overlayArrayList.add(overlayItem);
-                                }
-                            }).addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception exception) {
-                                    // Handle any errors
-                                }
-                            });
-                        }
-                    }
-                });
-            }
-        });
-
+        for (Map.Entry<String, String> e : ulogovanUser.friends.entrySet()) {
+            ids.add(e.getKey());
+        }
+        //setupMap();
     }
 
     @Override
@@ -261,34 +183,48 @@ public class FriendsMapActivity extends AppCompatActivity implements LocationLis
     }
 
     private void showMyPlaces() {
-
+        for (int i = 0; i < UsersData.getInstance().getUsers().size(); i++) {
+            User mp = UsersData.getInstance().getUser(i);
+            final long ONE_MEGABYTE = 1024 * 1024;
+            storageRef.child("images").child(mp.email + ".jpg").getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
+                @Override
+                public void onSuccess(byte[] bytes) {
+                    Drawable image = new BitmapDrawable(getResources(), BitmapFactory.decodeByteArray(bytes, 0, bytes.length));
+                    image.setBounds(0, 0, 50, 50);
+                    OverlayItem overlayItem = new OverlayItem(mp.username, mp.email, new GeoPoint(Double.parseDouble(mp.latitude), Double.parseDouble(mp.longitude)));
+                    if (mp.key.equals(uid))
+                        overlayItem.setMarker(Resources.getDrawable(R.drawable.current_user));
+                    else {
+                        if (ulogovanUser.friends.containsKey(mp.key)) {
+                            overlayItem.setMarker(image);
+                        } else {
+                            overlayItem.setMarker(Resources.getDrawable(R.drawable.user));
+                        }
+                    }
+                    overlayArrayList.add(overlayItem);
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception exception) {
+                    // Handle any errors
+                }
+            });
+        }
         myUsersOverlay = new ItemizedIconOverlay<>(overlayArrayList, new ItemizedIconOverlay.OnItemGestureListener<OverlayItem>() {
             @Override
             public boolean onItemSingleTapUp(int index, OverlayItem item) {
                 float[] distance = new float[2];
                 User mp = UsersData.getInstance().getUser(index);
-                boolean t = false;
-                for (User u : friends)
-                    if (u.email.equals(mp.email)) {
-                        t = true;
-                        break;
-                    }
-                if (mp.email.equals(ulogovanUser.email)) {
+                if (mp.key.equals(uid)) {
                     Intent intent = new Intent(FriendsMapActivity.this, ProfileActivity.class);
                     intent.putExtra("position", index);
                     startActivity(intent);
-                } else if (t) {
+                } else if (ulogovanUser.friends.containsKey(mp.key)) {
                     Intent intent = new Intent(FriendsMapActivity.this, FriendActivity.class);
                     intent.putExtra("position", index);
                     startActivity(intent);
                 } else {
-                    boolean t1 = false;
-                    for (User u : notfriends)
-                        if (u.email.equals(mp.email)) {
-                            t1 = true;
-                            break;
-                        }
-                    if (t1) {
+                    if (mp.requests == null || (!mp.requests.containsKey(uid) && !ulogovanUser.requests.containsKey(mp.key))) {
                         AlertDialog.Builder builder1 = new AlertDialog.Builder(FriendsMapActivity.this);
                         builder1.setMessage("Do you want to send request to " + mp.username + "?");
                         builder1.setCancelable(true);
@@ -312,9 +248,32 @@ public class FriendsMapActivity extends AppCompatActivity implements LocationLis
 
                         AlertDialog alert11 = builder1.create();
                         alert11.show();
-                    } else {
+                    } else if (!ulogovanUser.requests.containsKey(mp.key)) {
                         AlertDialog.Builder builder1 = new AlertDialog.Builder(FriendsMapActivity.this);
                         builder1.setMessage("Request is already sent to " + mp.username + "!");
+                        builder1.setCancelable(true);
+
+                        builder1.setPositiveButton(
+                                "Ok",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        dialog.cancel();
+                                    }
+                                });
+
+                        builder1.setNegativeButton(
+                                "Cancel",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        dialog.cancel();
+                                    }
+                                });
+
+                        AlertDialog alert11 = builder1.create();
+                        alert11.show();
+                    } else {
+                        AlertDialog.Builder builder1 = new AlertDialog.Builder(FriendsMapActivity.this);
+                        builder1.setMessage("User " + mp.username + " is already sent request to you!");
                         builder1.setCancelable(true);
 
                         builder1.setPositiveButton(
