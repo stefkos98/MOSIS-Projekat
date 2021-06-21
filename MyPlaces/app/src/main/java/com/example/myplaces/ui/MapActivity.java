@@ -71,6 +71,7 @@ public class MapActivity extends AppCompatActivity implements LocationListener,S
     ArrayList<Integer> indexes;
     Boolean food=true,medicine=true,water=true,vet=true,adoption=true;
     String animalType="All";
+    String query=null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -80,8 +81,9 @@ public class MapActivity extends AppCompatActivity implements LocationListener,S
         // Listener za promenu liste
         MyPlacesData.getInstance().setEventListener(new MyPlacesData.ListUpdatedEventListener() {
             @Override
-            public void onListUpdated() {
-                if(state==1) showMyPlacesSearchResults(); else setupMap();
+            public void
+            onListUpdated() {
+                if(state==1) repeatSearch(); else setupMap();
             }
         });
 
@@ -104,7 +106,7 @@ public class MapActivity extends AppCompatActivity implements LocationListener,S
         // gde da pokazuje mapa
         mapController = map.getController();
         if (mapController != null) {
-            mapController.setZoom(15.0);
+            mapController.setZoom(14.0);
             GeoPoint startPoint = new GeoPoint(43.3209, 21.8958);
             mapController.setCenter(startPoint);
         }
@@ -152,7 +154,7 @@ public class MapActivity extends AppCompatActivity implements LocationListener,S
         map.getOverlays().add(this.myLocationOverlay);
         mapController = map.getController();
         if (mapController != null) {
-            mapController.setZoom(15.0);
+            mapController.setZoom(14.0);
             myLocationOverlay.enableFollowLocation();
         }
     }
@@ -231,9 +233,6 @@ public class MapActivity extends AppCompatActivity implements LocationListener,S
 
             @Override
             public boolean onItemLongPress(int index, OverlayItem item) {
-                Intent intent = new Intent(MapActivity.this, AddCaseActivity.class);
-                intent.putExtra("position", index);
-                startActivityForResult(intent, 5);
                 return true;
             }
         }, getApplicationContext());
@@ -279,9 +278,6 @@ public class MapActivity extends AppCompatActivity implements LocationListener,S
 
             @Override
             public boolean onItemLongPress(int index, OverlayItem item) {
-                Intent intent = new Intent(MapActivity.this, AddCaseActivity.class);
-                intent.putExtra("position", index);
-                startActivityForResult(intent, 5);
                 return true;
             }
         }, getApplicationContext());
@@ -291,7 +287,7 @@ public class MapActivity extends AppCompatActivity implements LocationListener,S
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode==555){                Toast.makeText(getApplicationContext(),"CAO SVIMA",Toast.LENGTH_SHORT).show();
+        if (requestCode==555){
                 food=data.getBooleanExtra("food",false);
                 medicine=data.getBooleanExtra("medicine",false);
                 water=data.getBooleanExtra("water",false);
@@ -309,6 +305,19 @@ public class MapActivity extends AppCompatActivity implements LocationListener,S
     }
     @Override
     public boolean onQueryTextSubmit(String query) {
+        this.query=query;
+        state=1;
+        repeatSearch();
+        return false;
+
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        String text = newText;
+        return false;
+    }
+    public void repeatSearch(){
         ArrayList data=MyPlacesData.getInstance().getMyPlaces();
         searchResults=new ArrayList<>();
         indexes=new ArrayList<Integer>();
@@ -336,13 +345,5 @@ public class MapActivity extends AppCompatActivity implements LocationListener,S
         catch(Exception e){
             Toast.makeText(this,"Bad radius value",Toast.LENGTH_SHORT).show();
         }
-        return false;
-
-    }
-
-    @Override
-    public boolean onQueryTextChange(String newText) {
-        String text = newText;
-        return false;
     }
 }

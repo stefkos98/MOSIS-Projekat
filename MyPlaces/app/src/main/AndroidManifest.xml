@@ -64,12 +64,18 @@ package="com.example.myplaces">
     <activity android:name="com.example.myplaces.ui.RegisterActivity"></activity>
     <activity android:name="com.example.myplaces.ui.FriendRequestsActivity"></activity>
     <activity android:name="com.example.myplaces.ui.FindFriendsActivity"></activity>
-    <activity android:name="com.example.myplaces.ui.FriendsMapActivity"
+    <activity
+        android:name="com.example.myplaces.ui.FriendsMapActivity"
         android:theme="@style/AppTheme.NoActionBar" />
     <activity android:name="com.example.myplaces.ui.ShowActivity"></activity>
     <activity android:name="com.example.myplaces.ui.HelpActivity"></activity>
-    <activity android:name="com.example.myplaces.ui.FiltersActivity"
+    <activity
+        android:name="com.example.myplaces.ui.FiltersActivity"
         android:theme="@style/Theme.AppCompat.Light.Dialog"></activity>
+    <service
+        android:name="com.example.myplaces.services.ServiceComponent"
+        android:exported="true"
+        android:enabled="true"></service>
 
 </application>
 </manifest>

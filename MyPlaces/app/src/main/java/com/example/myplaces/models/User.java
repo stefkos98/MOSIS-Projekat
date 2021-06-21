@@ -1,5 +1,7 @@
 package com.example.myplaces.models;
 
+import android.graphics.drawable.Drawable;
+
 import com.google.firebase.database.Exclude;
 import com.google.firebase.database.IgnoreExtraProperties;
 
@@ -20,6 +22,8 @@ public class User {
     public HashMap<String,String> friends;
     @Exclude
     public String key;
+    @Exclude
+    public byte[] Uimage;
     public User() {
     }
 }

@@ -12,6 +12,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -19,6 +21,7 @@ import android.os.Bundle;
 import com.example.myplaces.R;
 import com.example.myplaces.models.MyPlace;
 import com.example.myplaces.models.MyPlacesData;
+import com.example.myplaces.services.ServiceComponent;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -44,11 +47,13 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 
 import android.provider.MediaStore;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -57,6 +62,8 @@ import android.widget.Toast;
 import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
 import java.util.Map;
+
+import static com.example.myplaces.ui.MapActivity.PERMISSION_ACCESS_FINE_LOCATION;
 
 public class ProfileActivity extends AppCompatActivity {
     EditText txtFirstName, txtLastName, txtUsername, txtPhone, txtEmail, txtPassword, txtPassword2;
@@ -113,6 +120,7 @@ public class ProfileActivity extends AppCompatActivity {
                     txtUsername.setEnabled(false);
                     txtUsername.setText(username);
                     txtPhone.setText(phone);
+                    ((Switch) findViewById(R.id.switch2)).setChecked(task.getResult().child("share").getValue(Boolean.class));
                     final long ONE_MEGABYTE = 1024 * 1024;
                     storageRef.child("images").child(email + ".jpg").getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
                         @Override
@@ -130,6 +138,8 @@ public class ProfileActivity extends AppCompatActivity {
                 }
             }
         });
+
+
         findViewById(R.id.imageChangePhoto).setOnClickListener(new View.OnClickListener() {
                                                                    @RequiresApi(api = Build.VERSION_CODES.GINGERBREAD)
                                                                    @Override
@@ -177,7 +187,7 @@ public class ProfileActivity extends AppCompatActivity {
                                                                       String pass2 = txtPassword2.getText().toString();
                                                                       Log.d("TAG1", pass1);
                                                                       Log.d("TAg2", pass2);
-                                                                      if (txtPassword.getText().toString() != "" && txtPassword2.getText().toString() != "") {
+                                                                      if (!TextUtils.isEmpty(txtPassword.getText().toString()) && !TextUtils.isEmpty(txtPassword2.getText().toString())) {
                                                                           FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                                                                           AuthCredential credential = EmailAuthProvider
                                                                                   .getCredential(user.getEmail(), txtPassword.getText().toString());
@@ -208,10 +218,18 @@ public class ProfileActivity extends AppCompatActivity {
                                                                       }
                                                                       DatabaseReference hopperRef = database.child("users").child(uid);
                                                                       Map<String, Object> hopperUpdates = new HashMap<>();
-                                                                      hopperUpdates.put("share",((Switch)findViewById(R.id.switch2)).isChecked());
+                                                                      hopperUpdates.put("share", ((Switch) findViewById(R.id.switch2)).isChecked());
                                                                       hopperUpdates.put("firstName", txtFirstName.getText().toString());
                                                                       hopperUpdates.put("lastName", txtLastName.getText().toString());
                                                                       hopperUpdates.put("phone", txtPhone.getText().toString());
+                                                                      Boolean checked = ((Switch) findViewById(R.id.switch2)).isChecked();
+                                                                      hopperUpdates.put("share", checked);
+                                                                      Intent service = new Intent(getApplicationContext(), ServiceComponent.class);
+                                                                      if (checked) {
+                                                                          startService(service);
+                                                                      } else {
+                                                                          stopService(service);
+                                                                      }
                                                                       hopperRef.updateChildren(hopperUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
                                                                           @Override
                                                                           public void onComplete(@NonNull Task<Void> task) {
@@ -284,6 +302,15 @@ public class ProfileActivity extends AppCompatActivity {
                                            int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         switch (requestCode) {
+            case 121: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    ((Switch) findViewById(R.id.switch2)).setChecked(true);
+
+                } else {
+                    ((Switch) findViewById(R.id.switch2)).setChecked(false);
+                }
+                break;
+            }
             case 101:
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0 &&
