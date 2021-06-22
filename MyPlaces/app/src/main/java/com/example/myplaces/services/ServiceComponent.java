@@ -19,6 +19,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 
 import com.example.myplaces.R;
 import com.example.myplaces.ui.MapActivity;
@@ -30,6 +31,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 public class ServiceComponent extends Service implements LocationListener {
+    private static final String CHANNEL_1_ID = "channel1";
+
     public ServiceComponent() {
     }
 
@@ -41,7 +44,7 @@ public class ServiceComponent extends Service implements LocationListener {
     LocationManager locationManager;
     static final int PERMISSION_ACCESS_FINE_LOCATION = 1;
     int notificationId = 1;
-    NotificationManager nm;
+    NotificationManagerCompat nm;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -62,21 +65,36 @@ public class ServiceComponent extends Service implements LocationListener {
                     .setContentText("").build();
             startForeground(1, notification);
        */
-        if (userID.equals(userID)) {
-            nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-            int icon = R.drawable.pin;
-            String txt = "Notification";
-            long when = System.currentTimeMillis();
-            Notification n = new Notification(icon, txt, when);
-            Intent intent = new Intent(getApplicationContext(), MapActivity.class);
-            PendingIntent pi = PendingIntent.getActivity(getApplicationContext(), 0, intent, 0);
-            //n.setLatestEventInfo(getApplicationContext())
-            nm.notify(notificationId, n);
-        }else{
-            nm.cancel(notificationId);
+        nm = NotificationManagerCompat.from(this);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel1 = new NotificationChannel(
+                    CHANNEL_1_ID,
+                    "Channel 1",
+                    NotificationManager.IMPORTANCE_HIGH
+            );
+            channel1.setDescription("This is Channel 1");
+            NotificationManager manager = getSystemService(NotificationManager.class);
+            manager.createNotificationChannel(channel1);
+            if(true){
+                sendOnChannel1("Ja sam Tamara", "Ovo je stefi");
+            }
         }
+    }
+    public void sendOnChannel1(String title, String message){
+        Intent intent = new Intent(this, MapActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
 
-
+        Notification notification = new NotificationCompat.Builder(this, CHANNEL_1_ID)
+                .setSmallIcon(R.drawable.pin)
+                .setContentTitle(title)
+                .setContentText(message)
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setCategory(NotificationCompat.CATEGORY_MESSAGE)
+                .setContentIntent(pendingIntent)
+                .setAutoCancel(true)
+                .build();
+        nm.notify(1, notification);
     }
 
     @Override
