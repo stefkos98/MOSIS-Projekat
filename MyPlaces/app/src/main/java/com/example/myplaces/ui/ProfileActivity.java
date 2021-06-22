@@ -1,6 +1,7 @@
 package com.example.myplaces.ui;
 
 import android.Manifest;
+import android.app.ActivityManager;
 import android.app.Notification;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -67,13 +68,14 @@ import static com.example.myplaces.ui.MapActivity.PERMISSION_ACCESS_FINE_LOCATIO
 
 public class ProfileActivity extends AppCompatActivity {
     EditText txtFirstName, txtLastName, txtUsername, txtPhone, txtEmail, txtPassword, txtPassword2;
+    Switch switch2;
     private static final int TAKE_PICTURE = 100;
     int NEW_PHOTO_TAKEN = 0;
     FirebaseAuth mAuth;
     private Bitmap imageBitmap;
     StorageReference storageRef, pictureRef;
     DatabaseReference database;
-
+    boolean set=false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -89,6 +91,7 @@ public class ProfileActivity extends AppCompatActivity {
                 finish();
             }
         }, intentFilter);
+        switch2=findViewById(R.id.switch2);
         txtFirstName = findViewById(R.id.txtFirstNameP);
         txtLastName = findViewById(R.id.txtLastNameP);
         txtUsername = findViewById(R.id.txtUsernameP);
@@ -121,6 +124,7 @@ public class ProfileActivity extends AppCompatActivity {
                     txtUsername.setText(username);
                     txtPhone.setText(phone);
                     ((Switch) findViewById(R.id.switch2)).setChecked(task.getResult().child("share").getValue(Boolean.class));
+                    set=true;
                     final long ONE_MEGABYTE = 1024 * 1024;
                     storageRef.child("images").child(email + ".jpg").getBytes(ONE_MEGABYTE).addOnSuccessListener(new OnSuccessListener<byte[]>() {
                         @Override
@@ -139,7 +143,17 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
 
-
+        switch2.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if(set){
+                    if(compoundButton.isChecked()){
+                      checkLocationPermission();
+                    }
+                    Log.d("ABC",String.valueOf(compoundButton.isChecked()));
+                }
+            }
+        });
         findViewById(R.id.imageChangePhoto).setOnClickListener(new View.OnClickListener() {
                                                                    @RequiresApi(api = Build.VERSION_CODES.GINGERBREAD)
                                                                    @Override
@@ -225,10 +239,18 @@ public class ProfileActivity extends AppCompatActivity {
                                                                       Boolean checked = ((Switch) findViewById(R.id.switch2)).isChecked();
                                                                       hopperUpdates.put("share", checked);
                                                                       Intent service = new Intent(getApplicationContext(), ServiceComponent.class);
+                                                                      service.addCategory("servis");
                                                                       if (checked) {
-                                                                          startService(service);
+                                                                          if (isMyServiceRunning(ServiceComponent.class)) {
+                                                                              stopService(service);
+                                                                              startService(service);
+                                                                          } else
+                                                                              startService(service);
                                                                       } else {
-                                                                          stopService(service);
+                                                                          if (isMyServiceRunning(ServiceComponent.class)) {
+                                                                              Log.d("EFG","CAOOOOOOOOOOOOOOOOOOO");
+                                                                              stopService(service);
+                                                                          }
                                                                       }
                                                                       hopperRef.updateChildren(hopperUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
                                                                           @Override
@@ -302,7 +324,7 @@ public class ProfileActivity extends AppCompatActivity {
                                            int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         switch (requestCode) {
-            case 121: {
+            case PERMISSION_ACCESS_FINE_LOCATION: {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     ((Switch) findViewById(R.id.switch2)).setChecked(true);
 
@@ -353,5 +375,25 @@ public class ProfileActivity extends AppCompatActivity {
     public boolean onSupportNavigateUp() {
         onBackPressed();
         return true;
+    }
+    public  boolean isMyServiceRunning(Class<?> serviceClass) {
+        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
+    }
+    void checkLocationPermission(){
+      if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_ACCESS_FINE_LOCATION);
+    } else {
+    }
+    }
+    @Override
+    public void onStop() {
+        super.onStop();
     }
 }

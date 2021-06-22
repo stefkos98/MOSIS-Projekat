@@ -72,10 +72,20 @@ package="com.example.myplaces">
     <activity
         android:name="com.example.myplaces.ui.FiltersActivity"
         android:theme="@style/Theme.AppCompat.Light.Dialog"></activity>
+
     <service
         android:name="com.example.myplaces.services.ServiceComponent"
         android:exported="true"
         android:enabled="true"></service>
+
+    <service
+        android:name="com.example.myplaces.services.MessagingService"
+        android:exported="true"
+        android:enabled="true">
+    <intent-filter>
+        <action android:name="com.google.firebase.MESSAGING_EVENT" />
+    </intent-filter>
+    </service>
 
 </application>
 </manifest>

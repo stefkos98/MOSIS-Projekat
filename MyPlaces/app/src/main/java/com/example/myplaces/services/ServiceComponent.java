@@ -32,6 +32,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 public class ServiceComponent extends Service implements LocationListener {
     private static final String CHANNEL_1_ID = "channel1";
+    private boolean allowRebind;
 
     public ServiceComponent() {
     }
@@ -45,7 +46,6 @@ public class ServiceComponent extends Service implements LocationListener {
     static final int PERMISSION_ACCESS_FINE_LOCATION = 1;
     int notificationId = 1;
     NotificationManagerCompat nm;
-
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onCreate() {
@@ -57,15 +57,8 @@ public class ServiceComponent extends Service implements LocationListener {
         database = FirebaseDatabase.getInstance().getReference();
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         getLocation();
-      /*  String CHANNEL_ID = "service_channel";
-            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, "Service Channel", NotificationManager.IMPORTANCE_DEFAULT);
-            ((NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE)).createNotificationChannel(channel);
-            Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
-                    .setContentTitle("")
-                    .setContentText("").build();
-            startForeground(1, notification);
-       */
-        nm = NotificationManagerCompat.from(this);
+
+     /*   nm = NotificationManagerCompat.from(this);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel channel1 = new NotificationChannel(
                     CHANNEL_1_ID,
@@ -78,34 +71,22 @@ public class ServiceComponent extends Service implements LocationListener {
             if(true){
                 sendOnChannel1("Ja sam Tamara", "Ovo je stefi");
             }
-        }
-    }
-    public void sendOnChannel1(String title, String message){
-        Intent intent = new Intent(this, MapActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
-
-        Notification notification = new NotificationCompat.Builder(this, CHANNEL_1_ID)
-                .setSmallIcon(R.drawable.pin)
-                .setContentTitle(title)
-                .setContentText(message)
-                .setPriority(NotificationCompat.PRIORITY_HIGH)
-                .setCategory(NotificationCompat.CATEGORY_MESSAGE)
-                .setContentIntent(pendingIntent)
-                .setAutoCancel(true)
-                .build();
-        nm.notify(1, notification);
+        }*/
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         getLocation();
+        user = mAuth.getCurrentUser();
+        userID = user.getUid();
+        super.onStartCommand(intent, flags, startId);
         return START_NOT_STICKY;
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
+        locationManager.removeUpdates(this);
         stopSelf();
     }
 
@@ -139,3 +120,20 @@ public class ServiceComponent extends Service implements LocationListener {
         return null;
     }
 }
+ /*  public void sendOnChannel1(String title, String message){
+        Intent intent = new Intent(this, MapActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+
+        Notification notification = new NotificationCompat.Builder(this, CHANNEL_1_ID)
+                .setSmallIcon(R.drawable.pin)
+                .setContentTitle(title)
+                .setContentText(message)
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setCategory(NotificationCompat.CATEGORY_MESSAGE)
+                .setContentIntent(pendingIntent)
+                .setAutoCancel(true)
+                .build();
+        nm.notify(1, notification);
+    }
+*/

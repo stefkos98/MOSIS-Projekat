@@ -195,11 +195,12 @@ public class FriendsMapActivity extends AppCompatActivity implements LocationLis
                 User mp = UsersData.getInstance().getUser(i);
                 Drawable image = new BitmapDrawable(getResources(), BitmapFactory.decodeByteArray(mp.Uimage, 0, mp.Uimage.length));
                 image.setBounds(0, 0, 50, 50);
-                OverlayItem overlayItem = new OverlayItem(mp.username, mp.email, new GeoPoint(Double.parseDouble(mp.latitude), Double.parseDouble(mp.longitude)));
+                OverlayItem overlayItem;
                 if (mp.key.equals(uid)) {
+                    overlayItem = new OverlayItem(mp.username, mp.email, new GeoPoint(location.getLatitude(), location.getLongitude()));
                     overlayItem.setMarker(this.getResources().getDrawable(R.drawable.current_user));
                 } else {
-
+                    overlayItem = new OverlayItem(mp.username, mp.email, new GeoPoint(Double.parseDouble(mp.latitude), Double.parseDouble(mp.longitude)));
                    if (ulogovanUser.friends!=null && ulogovanUser.friends.containsKey(mp.key)) {
                         overlayItem.setMarker(image);
                     } else {

@@ -1,32 +1,56 @@
 package com.example.myplaces.ui;
 
+import android.Manifest;
+import android.app.ActivityManager;
 import android.bluetooth.BluetoothAdapter;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 
 import com.example.myplaces.R;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
 
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Switch;
 
+import com.example.myplaces.services.ServiceComponent;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import static com.example.myplaces.ui.MapActivity.PERMISSION_ACCESS_FINE_LOCATION;
 
 public class HomeActivity extends AppCompatActivity {
     FirebaseAuth mAuth;
+    DatabaseReference database;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         mAuth = FirebaseAuth.getInstance();
+        database = FirebaseDatabase.getInstance().getReference();
+        database.child("users").child(mAuth.getCurrentUser().getUid()).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                if (task.getResult().child("share").getValue(Boolean.class)) {
+                    checkLocationPermission();
+                }
+            }
+        });
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -108,6 +132,10 @@ public class HomeActivity extends AppCompatActivity {
             broadcastIntent.setAction("com.package.ACTION_LOGOUT");
             sendBroadcast(broadcastIntent);
             mAuth.signOut();
+            Intent service = new Intent(getApplicationContext(), ServiceComponent.class);
+            if (isMyServiceRunning(ServiceComponent.class)) {
+                stopService(service);
+            }
             Intent logoutIntent = new Intent(HomeActivity.this, WelcomeActivity.class);
             logoutIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             startActivity(logoutIntent);
@@ -115,4 +143,54 @@ public class HomeActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
+    public boolean isMyServiceRunning(Class<?> serviceClass) {
+        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+
+    void checkLocationPermission() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_ACCESS_FINE_LOCATION);
+        } else {
+            Intent service = new Intent(getApplicationContext(), ServiceComponent.class);
+            service.addCategory("servis");
+            if (isMyServiceRunning(ServiceComponent.class)) {
+                stopService(service);
+                startService(service);
+            } else
+                startService(service);
+        }
+    }
+
+    public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                                           int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case PERMISSION_ACCESS_FINE_LOCATION: {
+                Intent service = new Intent(getApplicationContext(), ServiceComponent.class);
+                service.addCategory("servis");
+                if (isMyServiceRunning(ServiceComponent.class)) {
+                    stopService(service);
+                    startService(service);
+                } else
+                    startService(service);
+                break;
+            }
+        }
+    }
+    @Override
+    public void onBackPressed() {
+        moveTaskToBack(true);
+        // super.onBackPressed();
+    }
+
 }
