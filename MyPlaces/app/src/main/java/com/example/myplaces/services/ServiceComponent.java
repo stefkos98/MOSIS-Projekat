@@ -21,6 +21,8 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
 import com.example.myplaces.R;
+import com.example.myplaces.models.MyPlace;
+import com.example.myplaces.models.MyPlacesData;
 import com.example.myplaces.models.User;
 import com.example.myplaces.models.UsersData;
 import com.example.myplaces.ui.FriendsMapActivity;
@@ -34,6 +36,7 @@ public class ServiceComponent extends Service implements LocationListener {
     private boolean allowRebind;
     private static final double latitudeconst = 0.5;
     private static final double longitudeconst = 0.5;
+
     public ServiceComponent() {
     }
 
@@ -71,13 +74,34 @@ public class ServiceComponent extends Service implements LocationListener {
             manager.createNotificationChannel(channel1);
         }
 
-        for (User u : UsersData.getInstance().getUsers())
-            if (!u.key.equals(userID)) {
-                double dif1=Math.abs(Double.parseDouble(u.latitude)-location.getLatitude());
-                double dif2=Math.abs(Double.parseDouble(u.longitude)-location.getLongitude());
-                if(dif1<=latitudeconst && dif2<=longitudeconst) //da li treba da dodam i && u.share==true
-                    sendOnChannel1("Some user is near!", u.username+" is near. Click to see map!");
+        UsersData.getInstance().setEventListener(new UsersData.ListUpdatedEventListener() {
+            @Override
+            public void
+            onListUpdated() {
+                for (User u : UsersData.getInstance().getUsers())
+                    if (!u.key.equals(userID) && location != null) {
+                        float[] distance = new float[2];
+                        Location.distanceBetween(Double.parseDouble(u.latitude), Double.parseDouble(u.longitude), location.getLatitude(),
+                                location.getLongitude(), distance);
+                        if (distance[0] < 100 && u.share)
+                            sendOnChannel1("User is near", u.username + " is near. Click to see map!");
+                    }
             }
+        });
+        MyPlacesData.getInstance().setEventListener(new MyPlacesData.ListUpdatedEventListener() {
+            @Override
+            public void
+            onListUpdated() {
+                for (MyPlace mp : MyPlacesData.getInstance().getMyPlaces())
+                    if (location != null) {
+                        float[] distance = new float[2];
+                        Location.distanceBetween(Double.parseDouble(mp.latitude), Double.parseDouble(mp.longitude), location.getLatitude(),
+                                location.getLongitude(), distance);
+                        if (distance[0] < 100)
+                            sendOnChannel1("Help needed", " Animal " + mp.animalType + " needs help. Click to see where it is!");
+                    }
+            }
+        });
     }
 
     @Override
@@ -105,10 +129,20 @@ public class ServiceComponent extends Service implements LocationListener {
 
         for (User u : UsersData.getInstance().getUsers())
             if (!u.key.equals(userID)) {
-                double dif1=Math.abs(Double.parseDouble(u.latitude)-location.getLatitude());
-                double dif2=Math.abs(Double.parseDouble(u.longitude)-location.getLongitude());
-                if(dif1<=latitudeconst && dif2<=longitudeconst) //da li treba da dodam i && u.share==true
-                    sendOnChannel1("User is near", u.username+" is near. Click to see map!");
+                float[] distance = new float[2];
+                Location.distanceBetween(Double.parseDouble(u.latitude), Double.parseDouble(u.longitude), location.getLatitude(),
+                        location.getLongitude(), distance);
+                if (distance[0] < 100 && u.share)
+                    sendOnChannel1("User is near", u.username + " is near. Click to see map!");
+            }
+
+        for (MyPlace mp : MyPlacesData.getInstance().getMyPlaces())
+            if (location != null) {
+                float[] distance = new float[2];
+                Location.distanceBetween(Double.parseDouble(mp.latitude), Double.parseDouble(mp.longitude), location.getLatitude(),
+                        location.getLongitude(), distance);
+                if (distance[0] < 100)
+                    sendOnChannel1("Help needed", " Animal " + mp.animalType + " needs help. Click to see where it is!");
             }
     }
 
