@@ -15,16 +15,15 @@ import android.location.LocationManager;
 import android.os.Build;
 import android.os.IBinder;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
 import com.example.myplaces.R;
-import com.example.myplaces.ui.MapActivity;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
+import com.example.myplaces.models.User;
+import com.example.myplaces.models.UsersData;
+import com.example.myplaces.ui.FriendsMapActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
@@ -33,7 +32,8 @@ import com.google.firebase.database.FirebaseDatabase;
 public class ServiceComponent extends Service implements LocationListener {
     private static final String CHANNEL_1_ID = "channel1";
     private boolean allowRebind;
-
+    private static final double latitudeconst = 0.5;
+    private static final double longitudeconst = 0.5;
     public ServiceComponent() {
     }
 
@@ -46,6 +46,7 @@ public class ServiceComponent extends Service implements LocationListener {
     static final int PERMISSION_ACCESS_FINE_LOCATION = 1;
     int notificationId = 1;
     NotificationManagerCompat nm;
+
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onCreate() {
@@ -58,7 +59,7 @@ public class ServiceComponent extends Service implements LocationListener {
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         getLocation();
 
-     /*   nm = NotificationManagerCompat.from(this);
+        nm = NotificationManagerCompat.from(this);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel channel1 = new NotificationChannel(
                     CHANNEL_1_ID,
@@ -68,10 +69,15 @@ public class ServiceComponent extends Service implements LocationListener {
             channel1.setDescription("This is Channel 1");
             NotificationManager manager = getSystemService(NotificationManager.class);
             manager.createNotificationChannel(channel1);
-            if(true){
-                sendOnChannel1("Ja sam Tamara", "Ovo je stefi");
+        }
+
+        for (User u : UsersData.getInstance().getUsers())
+            if (!u.key.equals(userID)) {
+                double dif1=Math.abs(Double.parseDouble(u.latitude)-location.getLatitude());
+                double dif2=Math.abs(Double.parseDouble(u.longitude)-location.getLongitude());
+                if(dif1<=latitudeconst && dif2<=longitudeconst) //da li treba da dodam i && u.share==true
+                    sendOnChannel1("Some user is near!", u.username+" is near. Click to see map!");
             }
-        }*/
     }
 
     @Override
@@ -93,17 +99,17 @@ public class ServiceComponent extends Service implements LocationListener {
     @Override
     public void onLocationChanged(Location location) {
         this.location = location;
-        database.child("users").child(user.getUid()).child("latitude").setValue(String.valueOf(this.location.getLatitude())).addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                database.child("users").child(user.getUid()).child("longitude").setValue(String.valueOf(location.getLongitude())).addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                    }
-                });
+        database.child("users").child(user.getUid()).child("latitude").setValue(String.valueOf(this.location.getLatitude()));
+        database.child("users").child(user.getUid()).child("longitude").setValue(String.valueOf(this.location.getLongitude()));
 
+
+        for (User u : UsersData.getInstance().getUsers())
+            if (!u.key.equals(userID)) {
+                double dif1=Math.abs(Double.parseDouble(u.latitude)-location.getLatitude());
+                double dif2=Math.abs(Double.parseDouble(u.longitude)-location.getLongitude());
+                if(dif1<=latitudeconst && dif2<=longitudeconst) //da li treba da dodam i && u.share==true
+                    sendOnChannel1("User is near", u.username+" is near. Click to see map!");
             }
-        });
     }
 
     private void getLocation() {
@@ -119,9 +125,9 @@ public class ServiceComponent extends Service implements LocationListener {
         // TODO: Return the communication channel to the service.
         return null;
     }
-}
- /*  public void sendOnChannel1(String title, String message){
-        Intent intent = new Intent(this, MapActivity.class);
+
+    public void sendOnChannel1(String title, String message) {
+        Intent intent = new Intent(this, FriendsMapActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
 
@@ -136,4 +142,4 @@ public class ServiceComponent extends Service implements LocationListener {
                 .build();
         nm.notify(1, notification);
     }
-*/
+}
