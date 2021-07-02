@@ -26,6 +26,7 @@ import com.example.myplaces.models.MyPlacesData;
 import com.example.myplaces.models.User;
 import com.example.myplaces.models.UsersData;
 import com.example.myplaces.ui.FriendsMapActivity;
+import com.example.myplaces.ui.MapActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
@@ -33,9 +34,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 public class ServiceComponent extends Service implements LocationListener {
     private static final String CHANNEL_1_ID = "channel1";
-    private boolean allowRebind;
-    private static final double latitudeconst = 0.5;
-    private static final double longitudeconst = 0.5;
+    private static final String CHANNEL_2_ID = "channel2";
 
     public ServiceComponent() {
     }
@@ -46,8 +45,6 @@ public class ServiceComponent extends Service implements LocationListener {
     String userID;
     DatabaseReference database;
     LocationManager locationManager;
-    static final int PERMISSION_ACCESS_FINE_LOCATION = 1;
-    int notificationId = 1;
     NotificationManagerCompat nm;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -72,6 +69,15 @@ public class ServiceComponent extends Service implements LocationListener {
             channel1.setDescription("This is Channel 1");
             NotificationManager manager = getSystemService(NotificationManager.class);
             manager.createNotificationChannel(channel1);
+
+            NotificationChannel channel2 = new NotificationChannel(
+                    CHANNEL_2_ID,
+                    "Channel 2",
+                    NotificationManager.IMPORTANCE_HIGH
+            );
+            channel2.setDescription("This is Channel 2");
+            NotificationManager manager2 = getSystemService(NotificationManager.class);
+            manager2.createNotificationChannel(channel2);
         }
 
         UsersData.getInstance().setEventListener(new UsersData.ListUpdatedEventListener() {
@@ -98,7 +104,7 @@ public class ServiceComponent extends Service implements LocationListener {
                         Location.distanceBetween(Double.parseDouble(mp.latitude), Double.parseDouble(mp.longitude), location.getLatitude(),
                                 location.getLongitude(), distance);
                         if (distance[0] < 100)
-                            sendOnChannel1("Help needed", " Animal " + mp.animalType + " needs help. Click to see where it is!");
+                            sendOnChannel2("Help needed", " One " + mp.animalType + " needs help. Click to see where it is!");
                     }
             }
         });
@@ -142,7 +148,7 @@ public class ServiceComponent extends Service implements LocationListener {
                 Location.distanceBetween(Double.parseDouble(mp.latitude), Double.parseDouble(mp.longitude), location.getLatitude(),
                         location.getLongitude(), distance);
                 if (distance[0] < 100)
-                    sendOnChannel1("Help needed", " Animal " + mp.animalType + " needs help. Click to see where it is!");
+                    sendOnChannel2("Help needed", "One " + mp.animalType + " needs help. Click to see where it is!");
             }
     }
 
@@ -162,7 +168,7 @@ public class ServiceComponent extends Service implements LocationListener {
 
     public void sendOnChannel1(String title, String message) {
         Intent intent = new Intent(this, FriendsMapActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        //intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
 
         Notification notification = new NotificationCompat.Builder(this, CHANNEL_1_ID)
@@ -175,5 +181,22 @@ public class ServiceComponent extends Service implements LocationListener {
                 .setAutoCancel(true)
                 .build();
         nm.notify(1, notification);
+    }
+
+    public void sendOnChannel2(String title, String message) {
+        Intent intent = new Intent(this, MapActivity.class);
+        //intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+
+        Notification notification = new NotificationCompat.Builder(this, CHANNEL_2_ID)
+                .setSmallIcon(R.drawable.baseline_myplace)
+                .setContentTitle(title)
+                .setContentText(message)
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setCategory(NotificationCompat.CATEGORY_MESSAGE)
+                .setContentIntent(pendingIntent)
+                .setAutoCancel(true)
+                .build();
+        nm.notify(2, notification);
     }
 }

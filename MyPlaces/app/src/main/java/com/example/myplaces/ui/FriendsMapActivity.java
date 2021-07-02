@@ -82,7 +82,8 @@ public class FriendsMapActivity extends AppCompatActivity implements LocationLis
         UsersData.getInstance().setEventListener(new UsersData.ListUpdatedEventListener() {
             @Override
             public void onListUpdated() {
-                setupMap();
+                if(location!=null)
+                    setupMap();
             }
         });
         setContentView(R.layout.activity_friends_map);
@@ -170,7 +171,8 @@ public class FriendsMapActivity extends AppCompatActivity implements LocationLis
 
     private void setupMap() {
         setMyLocationOverlay();
-        showMyPlaces();
+        if(location!=null)
+            showMyPlaces();
     }
 
     private void showMyPlaces() {
@@ -218,7 +220,7 @@ public class FriendsMapActivity extends AppCompatActivity implements LocationLis
                         Intent intent = new Intent(FriendsMapActivity.this, ProfileActivity.class);
                         intent.putExtra("position", index);
                         startActivity(intent);
-                    } else if (ulogovanUser.friends.containsKey(mpu.key)) {
+                    } else if (ulogovanUser.friends!=null && ulogovanUser.friends.containsKey(mpu.key)) {
                         Intent intent = new Intent(FriendsMapActivity.this, FriendActivity.class);
                         intent.putExtra("position", index);
                         startActivity(intent);

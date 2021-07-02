@@ -46,8 +46,10 @@ public class HomeActivity extends AppCompatActivity {
         database.child("users").child(mAuth.getCurrentUser().getUid()).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DataSnapshot> task) {
-                if (task.getResult().child("share").getValue(Boolean.class)) {
-                    checkLocationPermission();
+                if(task.isSuccessful()) {
+                    if (task.getResult().child("share").getValue(Boolean.class)) {
+                        checkLocationPermission();
+                    }
                 }
             }
         });
