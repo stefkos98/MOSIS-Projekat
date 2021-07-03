@@ -9,11 +9,13 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.IBinder;
+import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
@@ -26,6 +28,7 @@ import com.example.myplaces.models.MyPlacesData;
 import com.example.myplaces.models.User;
 import com.example.myplaces.models.UsersData;
 import com.example.myplaces.ui.FriendsMapActivity;
+import com.example.myplaces.ui.HomeActivity;
 import com.example.myplaces.ui.MapActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -108,6 +111,21 @@ public class ServiceComponent extends Service implements LocationListener {
                     }
             }
         });
+        // FOREGROUND SERVICE
+        Intent notificationIntent = new Intent(this, HomeActivity.class);
+
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0,
+                notificationIntent, 0);
+
+        Notification notification = new NotificationCompat.Builder(this)
+                .setSmallIcon(R.drawable.baseline_info_white_24dp)
+                .setContentTitle("Pet Care")
+                .setContentText("Background service active")
+                .setContentIntent(pendingIntent).build();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+            startMyOwnForeground();
+        else
+            startForeground(1, notification);
     }
 
     @Override
@@ -122,7 +140,9 @@ public class ServiceComponent extends Service implements LocationListener {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        Toast.makeText(this,"KRAAJ",Toast.LENGTH_SHORT).show();
         locationManager.removeUpdates(this);
+        stopForeground(true);
         stopSelf();
     }
 
@@ -198,5 +218,25 @@ public class ServiceComponent extends Service implements LocationListener {
                 .setAutoCancel(true)
                 .build();
         nm.notify(2, notification);
+    }
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void startMyOwnForeground(){
+        String NOTIFICATION_CHANNEL_ID = "com.example.simpleapp";
+        String channelName = "My Background Service";
+        NotificationChannel chan = new NotificationChannel(NOTIFICATION_CHANNEL_ID, channelName, NotificationManager.IMPORTANCE_NONE);
+        chan.setLightColor(Color.BLUE);
+        chan.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
+        NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        assert manager != null;
+        manager.createNotificationChannel(chan);
+
+        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID);
+        Notification notification = notificationBuilder.setOngoing(true)
+                .setSmallIcon(R.drawable.baseline_info_white_24dp)
+                .setContentTitle("App is running in background")
+                .setPriority(NotificationManager.IMPORTANCE_MIN)
+                .setCategory(Notification.CATEGORY_SERVICE)
+                .build();
+        startForeground(1338, notification);
     }
 }
