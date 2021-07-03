@@ -125,7 +125,7 @@ public class ServiceComponent extends Service implements LocationListener {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
             startMyOwnForeground();
         else
-            startForeground(1, notification);
+            startForeground(1337, notification);
     }
 
     @Override
@@ -140,7 +140,6 @@ public class ServiceComponent extends Service implements LocationListener {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Toast.makeText(this,"KRAAJ",Toast.LENGTH_SHORT).show();
         locationManager.removeUpdates(this);
         stopForeground(true);
         stopSelf();
